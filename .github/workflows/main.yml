@@ -16,10 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
-      - name: Remove existing dist folder
-        run: |
-          test -d "./accelerator-home-ui/dist" && rm -rf "./accelerator-home-ui/dist"
-      
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
