@@ -1754,9 +1754,7 @@ export default class App extends Router.App {
 
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        if (GLOBALS.topmostApp === applicationName) {
-          appApi.exitApp(applicationName, true, true);
-        }
+        appApi.exitApp(applicationName, true, true);
       } else {
         console.log("App onApplicationStopRequest: " + notification.applicationName + " is not supported.")
       }
