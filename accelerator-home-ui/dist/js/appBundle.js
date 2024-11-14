@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Tue, 24 Sep 2024 09:45:54 GMT
+ * Generated: Fri, 08 Nov 2024 06:32:08 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = ((cb, delay) => {
+  var easeExecution = (cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = ((App, appSettings, platformSettings, appData) => {
+  var Launch = (App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -25331,9 +25331,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = ((styles, theme) => {
+  var createStyles = (styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  });
+  };
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -43052,9 +43052,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       }
       var processedStyle = JSON.stringify(styleObj, ((_, value) => {
           if (-1 < [ "tone", "mode" ].indexOf(_)) return value;
-          if ("string" === typeof value && value.startsWith("theme.")) {
+          if (typeof value === "string" && value.startsWith("theme.")) {
               return getValFromObjPath(targetObject, value);
-          } else if (Array.isArray(value) && value.length === 2 && typeof value[0] === "string" && value[0].substr(0, 1) === "#" && typeof value[1] === "number") {
+          }
+          function isValidColor(num) {
+              return num >= 0 && num <= 4294967295;
+          }
+          if (Array.isArray(value) && value.length === 2 && (typeof value[0] === "string" && value[0].startsWith("#") || typeof value[0] === "number" && isValidColor(value[0])) && typeof value[1] === "number") {
               return getHexColor(value[0], value[1]) || value;
           }
           return value;
@@ -43237,6 +43241,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this.clearStyleCache();
           this.update();
       }
+      clearStyleChainCache() {
+          clearStyleChainCache();
+      }
       clearSourceCache() {
           if (!this.component) return;
           var sourceKey = this._generateCacheKey("styleSource");
@@ -43249,7 +43256,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           cache.delete(styleKey);
       }
       _generateCacheKey(name) {
-          var cacheKey = [ name, this.component.constructor.__componentName, this._customStyleHash ].filter(Boolean).join("_");
+          var cacheKey = [ name, this.component._targetSubTheme, this.component.constructor.__componentName, this._customStyleHash ].filter(Boolean).join("_");
           return cacheKey;
       }
       _addCache(name, payload) {
@@ -43291,7 +43298,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
               if (!styleSource) {
                   styleSource = generateComponentStyleSource({
                       alias: this.component.constructor.aliasStyles,
-                      componentConfig: this.component._componentConfig,
                       inlineStyle: this.component._componentLevelStyle,
                       styleChain: getStyleChainMemoized(this.component),
                       theme: this.component.theme
@@ -43387,6 +43393,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
               if (this._targetSubTheme) {
                   this._styleManager.clearListeners();
                   this._styleManager.setupListeners();
+                  this._styleManager.clearStyleChainCache();
                   this._styleManager.clearStyleCache();
                   this._styleManager.clearSourceCache();
                   this._styleManager.update();
@@ -66731,9 +66738,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         console.log('App onApplicationStopRequest: ' + JSON.stringify(notification));
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
-          if (GLOBALS.topmostApp === applicationName) {
-            appApi.exitApp(applicationName, true, true);
-          }
+          appApi.exitApp(applicationName, true, true);
         } else {
           console.log("App onApplicationStopRequest: " + notification.applicationName + " is not supported.");
         }
