@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Fri, 08 Nov 2024 06:32:08 GMT
+ * Generated: Thu, 14 Nov 2024 13:33:56 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = (cb, delay) => {
+  var easeExecution = ((cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = (App, appSettings, platformSettings, appData) => {
+  var Launch = ((App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -25331,9 +25331,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = (styles, theme) => {
+  var createStyles = ((styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  };
+  });
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -37935,6 +37935,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       this.appApi.getResolution().then(resolution => {
         this.appApi.getSupportedResolutions().then(res => {
           options = [...res];
+          this.tag('List').rollMax = options.length * 90;
           this.tag('ResolutionScreenContents').h = options.length * 90;
           this.tag('ResolutionScreenContents.List').h = options.length * 90;
           this.tag('List').items = options.map((item, index) => {

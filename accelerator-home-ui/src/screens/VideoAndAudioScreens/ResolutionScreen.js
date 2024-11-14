@@ -117,6 +117,7 @@ export default class ResolutionScreen extends Lightning.Component {
         this.appApi.getResolution().then(resolution => {
             this.appApi.getSupportedResolutions().then(res => {
                 options = [...res]
+                this.tag('List').rollMax=options.length* 90
                 this.tag('ResolutionScreenContents').h = options.length * 90
                 this.tag('ResolutionScreenContents.List').h = options.length * 90
                 this.tag('List').items = options.map((item, index) => {
