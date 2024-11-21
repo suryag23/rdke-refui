@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Thu, 21 Nov 2024 06:13:40 GMT
+ * Generated: Thu, 21 Nov 2024 15:09:04 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -39469,7 +39469,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       if (!this._isBluetoothExist && !this._isRCcontrolExist) {
         this.tag('Error').notify({
           'title': "Remote control plugin and Bluetooth plugin are not found",
-          'msg': 'if we want to proceed .Click Ok',
+          'msg': 'Click to proceed',
           'count': 0
         });
         this.tag('Error').isButtonVisible('OK', true);

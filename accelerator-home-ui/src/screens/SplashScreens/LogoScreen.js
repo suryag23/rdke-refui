@@ -101,7 +101,7 @@ export default class LogoScreen extends Lightning.Component {
         if(!this._isBluetoothExist && !this._isRCcontrolExist) {
             this.tag('Error').notify({
                 'title' : "Remote control plugin and Bluetooth plugin are not found",
-                'msg': 'if we want to proceed .Click Ok','count':0
+                'msg': 'Click to proceed','count':0
             })
             this.tag('Error').isButtonVisible('OK', true)
             this.tag('Error').alpha = 1
