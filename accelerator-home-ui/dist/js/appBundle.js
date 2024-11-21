@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Thu, 14 Nov 2024 13:33:56 GMT
+ * Generated: Thu, 21 Nov 2024 15:09:04 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = ((cb, delay) => {
+  var easeExecution = (cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = ((App, appSettings, platformSettings, appData) => {
+  var Launch = (App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -13437,8 +13437,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   }).catch(() => {
     Storage$1.set("ipAddress", null);
   });
-  let appApi$c = new AppApi();
-  appApi$c.getIP().then(ip => {
+  let appApi$d = new AppApi();
+  appApi$d.getIP().then(ip => {
     IpAddress2 = ip;
   });
 
@@ -13619,7 +13619,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           if (items[i].callsign === "YouTube" || items[i].callsign === "YouTubeTV") {
             callsign = "Cobalt";
           }
-          await appApi$c.getPluginStatus(callsign).catch(err => {
+          await appApi$d.getPluginStatus(callsign).catch(err => {
             console.log("Error:", err);
             items.splice(i, 1);
             i--;
@@ -13637,7 +13637,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           } else if (items[i].applicationType === "YouTube" || items[i].applicationType === "YouTubeTV") {
             callsign = "Cobalt";
           }
-          await appApi$c.getPluginStatus(callsign).catch(err => {
+          await appApi$d.getPluginStatus(callsign).catch(err => {
             console.log("Error:", err);
             items.splice(i, 1);
             i--;
@@ -25331,9 +25331,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = ((styles, theme) => {
+  var createStyles = (styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  });
+  };
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -29858,7 +29858,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  let appApi$b = new AppApi();
+  let appApi$c = new AppApi();
   var previousFocusedItemSSid;
   class WiFiScreen$1 extends lng$1.Component {
     pageTransition() {
@@ -29964,7 +29964,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       };
     }
     async _init() {
-      await appApi$b.checkStatus(Wifi.get().callsign).then(result => {
+      await appApi$c.checkStatus(Wifi.get().callsign).then(result => {
         if (result[0].state !== "activated") {
           Wifi.get().activate();
         }
@@ -33067,7 +33067,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$a = new AppApi();
+  const appApi$b = new AppApi();
   const thunder$f = thunderJS$1(CONFIG.thunderConfig);
   const loader$2 = 'Loader';
   class LanguageScreen$2 extends lng$1.Component {
@@ -33122,7 +33122,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           item: item
         };
       });
-      appApi$a.deactivateResidentApp(loader$2);
+      appApi$b.deactivateResidentApp(loader$2);
       rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
       rdkShellApisInstance.setFocus(GLOBALS.selfClientName).then(result => {
         console.log('LanguageScreen: ResidentApp moveToFront Success');
@@ -33167,7 +33167,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
               });
             }
             if ("ResidentApp" === GLOBALS.selfClientName) {
-              appApi$a.setUILanguage(updatedLanguage);
+              appApi$b.setUILanguage(updatedLanguage);
             } else {
               FireBoltApi.get().localization.setlanguage(availableLanguages[this._Languages.tag('List').index]).then(res => console.log("sucess language set ::::", res));
             }
@@ -33175,7 +33175,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             let path = location.pathname.split('index.html')[0];
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
-            appApi$a.launchResident(notification_url, loader$2).catch(err => {
+            appApi$b.launchResident(notification_url, loader$2).catch(err => {
               console.error("error while launching loader url in resident app", err);
             });
             rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, false);
@@ -34965,7 +34965,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$9 = new AppApi();
+  const appApi$a = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -35105,7 +35105,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this._focus();
         }
         _handleEnter() {
-          appApi$9.reboot().then(result => {
+          appApi$a.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
             this._setState('Rebooting');
           });
@@ -35825,7 +35825,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$8 = new AppApi();
+  const appApi$9 = new AppApi();
   const _btApi = new BluetoothApi();
 
   /**
@@ -35979,28 +35979,28 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       AlexaApi.get().disableSmartScreen();
       AlexaApi.get().resetAVSCredentials();
       AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
-      let getsuportedmode = await appApi$8.getSupportedAudioPorts();
+      let getsuportedmode = await appApi$9.getSupportedAudioPorts();
       for (let i = 0; i < getsuportedmode.supportedAudioPorts.length; i++) {
         if (getsuportedmode.supportedAudioPorts[i] != 'SPDIF0') {
-          let rsbass = await appApi$8.resetBassEnhancer(getsuportedmode.supportedAudioPorts[i]).catch(err => {
+          let rsbass = await appApi$9.resetBassEnhancer(getsuportedmode.supportedAudioPorts[i]).catch(err => {
             console.log("resetBassEnhancer", err);
           });
           if (rsbass.success != true) {
             console.log("resetBassEnhancer", rsbass);
           } //throw new Error(rsbass); }//{Promise.reject(false); return}
-          let rsDialog = await appApi$8.resetDialogEnhancement(getsuportedmode.supportedAudioPorts[i]).catch(err => {
+          let rsDialog = await appApi$9.resetDialogEnhancement(getsuportedmode.supportedAudioPorts[i]).catch(err => {
             console.log("resetDialogEnhancement", err);
           }); //{Promise.reject(JSON.stringify(err))});
           if (rsDialog.success != true) {
             console.log("resetDialogEnhancement", rsDialog);
           }
-          let rsVirtualizer = await appApi$8.resetSurroundVirtualizer(getsuportedmode.supportedAudioPorts[i]).catch(err => {
+          let rsVirtualizer = await appApi$9.resetSurroundVirtualizer(getsuportedmode.supportedAudioPorts[i]).catch(err => {
             console.log("resetSurroundVirtualizer", err);
           });
           if (rsVirtualizer.success != true) {
             console.log("resetSurroundVirtualizer", rsVirtualizer);
           }
-          let rsvolumelvel = await appApi$8.resetVolumeLeveller(getsuportedmode.supportedAudioPorts[i]).catch(err => {
+          let rsvolumelvel = await appApi$9.resetVolumeLeveller(getsuportedmode.supportedAudioPorts[i]).catch(err => {
             console.log("resetVolumeLeveller", err);
           });
           if (rsvolumelvel.success != true) {
@@ -36008,8 +36008,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           }
         }
       }
-      await _btApi.btactivate().then(result => console.log("Btactivate", result));
-      let getPairedDevices = await _btApi.getPairedDevices();
+      await _btApi.btactivate().then(result => console.log("Btactivate", result)).catch(err => console.log("error while activating bluetooth"));
+      let getPairedDevices = await _btApi.getPairedDevices().then(res => res).catch(err => 0);
       console.log("getpairedDevices", getPairedDevices);
       for (let i = 0; i < getPairedDevices.length; i++) {
         if (getPairedDevices.length > 0) {
@@ -36023,10 +36023,10 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       }
       await RCApi.get().activate().then(() => {
         RCApi.get().factoryReset();
-      });
-      let contollerStat = await appApi$8.checkStatus("Monitor");
+      }).catch(err => console.log("error while resetting remote control"));
+      let contollerStat = await appApi$9.checkStatus("Monitor");
       for (let i = 0; i < contollerStat[0].configuration.observables.length; i++) {
-        let monitorstat = await appApi$8.monitorStatus(contollerStat[0].configuration.observables[i].callsign).catch(err => {
+        let monitorstat = await appApi$9.monitorStatus(contollerStat[0].configuration.observables[i].callsign).catch(err => {
           console.log("monitorStatus", err);
         });
         if (monitorstat.length < 0) {
@@ -36046,13 +36046,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       await Warehouse.get().resetDevice().catch(err => {
         console.error("resetDevice", err);
       });
-      let rsactivitytime = await appApi$8.resetInactivityTime().catch(err => {
+      let rsactivitytime = await appApi$9.resetInactivityTime().catch(err => {
         console.error("resetInactivityTime", err);
       });
       if (rsactivitytime.success != true) {
         console.log("rsactivitytime", rsactivitytime);
       }
-      let clearLastDeepSleepReason = await appApi$8.clearLastDeepSleepReason().catch(err => {
+      let clearLastDeepSleepReason = await appApi$9.clearLastDeepSleepReason().catch(err => {
         console.error("clearLastDeepSleepReason", err);
       });
       if (clearLastDeepSleepReason.success != true) {
@@ -36070,10 +36070,10 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       if (wifidisconnect.success != true) {
         console.log("wifidisconnect", wifidisconnect);
       }
-      await appApi$8.clearCache().catch(err => {
+      await appApi$9.clearCache().catch(err => {
         console.error("clearCache error: ", err);
       });
-      await appApi$8.reboot().then(result => {
+      await appApi$9.reboot().then(result => {
         console.log('device rebooting' + JSON.stringify(result));
       });
     }
@@ -36202,7 +36202,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  var appApi$7 = new AppApi();
+  var appApi$8 = new AppApi();
   var thunder$c = thunderJS$1(CONFIG.thunderConfig);
   class SreenSaverScreen extends lng$1.Component {
     _onChanged() {
@@ -36336,7 +36336,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             console.log("successfully set the timer to ".concat(time, " minutes"));
             thunder$c.on('org.rdk.RDKShell', 'onUserInactivity', notification => {
               console.log("UserInactivityStatusNotification: ", JSON.stringify(notification));
-              appApi$7.getAvCodeStatus().then(result => {
+              appApi$8.getAvCodeStatus().then(result => {
                 console.log("Avdecoder", result.avDecoderStatus);
                 if ((result.avDecoderStatus === "IDLE" || result.avDecoderStatus === "PAUSE") && GLOBALS.topmostApp === GLOBALS.selfClientName) {
                   this.fireAncestors("$hideImage", 1);
@@ -37707,7 +37707,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   /**
    * Class for HDMI Output Screen.
    */
-  var appApi$6 = new AppApi();
+  var appApi$7 = new AppApi();
   class HdmiOutputScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
@@ -37777,8 +37777,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     _focus() {
       this.loadingAnimation.start();
       let options = [];
-      appApi$6.getSoundMode().then(result => {
-        appApi$6.getSupportedAudioModes().then(res => {
+      appApi$7.getSoundMode().then(result => {
+        appApi$7.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -38449,6 +38449,28 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             h: 3,
             rect: true,
             mountX: 0.5
+          },
+          Button: {
+            x: 0,
+            y: 450,
+            w: 300,
+            mountX: 0.5,
+            h: 60,
+            rect: true,
+            color: 0xfff58233,
+            Name: {
+              x: 150,
+              y: 30,
+              mount: 0.5,
+              text: {
+                text: '',
+                fontFace: CONFIG.language.font,
+                fontSize: 22,
+                textColor: 0xffffffff,
+                fontStyle: 'bold'
+              }
+            },
+            visible: false
           }
         }
       };
@@ -38456,9 +38478,14 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     set item(error) {
       this.tag('Pairing').text = error;
     }
+    set timerVisible(v) {
+      this.tag('Timer').alpha = v;
+    }
     _active() {
       this.tag('Timer').text.text = "";
-      this.initTimer();
+      if (this.timeout > 0) {
+        this.initTimer();
+      }
     }
     initTimer() {
       this.timeInterval = Registry.setInterval(() => {
@@ -38469,6 +38496,14 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           Router.focusPage();
         }
       }, 1000);
+    }
+
+    /**
+     * @param {{ button: any; visible: any; }} v
+     */
+    isButtonVisible(button, visible) {
+      this.tag('Name').text.text = button;
+      this.tag('Button').visible = visible;
     }
     _inactive() {
       if (this.timeInterval) {
@@ -39361,6 +39396,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  var appApi$6 = new AppApi();
+  let path = '';
   class LogoScreen extends lng$1.Component {
     static _template() {
       return {
@@ -39382,14 +39419,21 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           w: 216,
           h: 121,
           src: Utils.asset('/images/splash/gracenote.png')
+        },
+        Error: {
+          alpha: 0,
+          type: Failscreen,
+          timerVisible: false
         }
       };
     }
     pageTransition() {
       return 'right';
     }
-    _init() {
+    async _init() {
       this.btApi = new BluetoothApi();
+      await appApi$6.getPluginStatus("org.rdk.Bluetooth").then(() => this._isBluetoothExist = true).catch(() => this._isBluetoothExist = false);
+      await appApi$6.getPluginStatus("org.rdk.RemoteControl").then(() => this._isRCcontrolExist = true).catch(() => this._isRCcontrolExist = false);
     }
     checkPath(path) {
       if (path === 'ui') {
@@ -39402,7 +39446,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       console.log('Splash Screen timer end - ', new Date().toUTCString());
     }
     async _focus() {
-      let path = Storage$1.get('setup') === true ? 'menu' : 'splash/bluetooth';
+      path = Storage$1.get('setup') === true ? 'menu' : 'splash/bluetooth';
       var map = {
         37: false,
         38: false,
@@ -39418,27 +39462,57 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }
       };
       Registry.addEventListener(document, 'keydown', this.handler);
-      await this.btApi.btactivate().then(res => {
-        console.log("btactivate", res);
-      });
-      this.btApi.getPairedDevices().then(devices => {
-        console.log("LogoScreen: BT device ", devices);
-        if (devices.length > 0 || Storage$1.get('setup')) {
-          path = this.checkPath(path);
+      if (Storage$1.get('setup') === true) {
+        this._setState('Next');
+        return true;
+      }
+      if (!this._isBluetoothExist && !this._isRCcontrolExist) {
+        this.tag('Error').notify({
+          'title': "Remote control plugin and Bluetooth plugin are not found",
+          'msg': 'Click to proceed',
+          'count': 0
+        });
+        this.tag('Error').isButtonVisible('OK', true);
+        this.tag('Error').alpha = 1;
+        this._setState('Ok');
+      } else {
+        if (this._isBluetoothExist) {
+          await this.btApi.btactivate().then(res => {
+            console.log("successfully btactivated", res);
+          }).catch(err => console.log("error in btactivate"));
+          this.btApi.getPairedDevices().then(devices => {
+            if (devices.length > 0 || Storage$1.get('setup')) {
+              path = this.checkPath(path);
+            }
+          }).catch(() => {
+            path = this.checkPath(path);
+          });
         }
-      }).catch(() => {
-        console.log('LogoScreen: Paired Device Error');
-        path = this.checkPath(path);
-      });
-      setTimeout(() => {
-        Router.navigate(path);
-      }, 5000);
+        this._setState('Next');
+      }
     }
     _unfocus() {
       Registry.removeEventListener(document, 'keydown', this.handler);
     }
     _handleBack() {
       console.error("Initial page; cannot go back.");
+    }
+    static _states() {
+      return [class Ok extends this {
+        _handleEnter() {
+          path = 'splash/language';
+          this._setState('Next');
+        }
+        $exit() {
+          this.tag('Error').alpha = 0;
+        }
+      }, class Next extends this {
+        $enter() {
+          setTimeout(() => {
+            Router.navigate(path);
+          }, 5000);
+        }
+      }];
     }
   }
 
