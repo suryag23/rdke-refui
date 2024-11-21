@@ -19,6 +19,10 @@
 
 import { Lightning, Utils, Router, Storage, Registry } from '@lightningjs/sdk'
 import BluetoothApi from '../../api/BluetoothApi'
+import Failscreen from '../FailScreen';
+import AppApi from '../../api/AppApi';
+var appApi = new AppApi();
+let path = '';
 
 export default class LogoScreen extends Lightning.Component {
     static _template() {
@@ -41,6 +45,11 @@ export default class LogoScreen extends Lightning.Component {
                 w: 216,
                 h: 121,
                 src: Utils.asset('/images/splash/gracenote.png')
+            },
+            Error:{
+                alpha :0,
+                type: Failscreen,
+                timerVisible : false
             }
         }
     }
@@ -49,8 +58,14 @@ export default class LogoScreen extends Lightning.Component {
         return 'right'
     }
 
-    _init() {
+    async _init() {
         this.btApi = new BluetoothApi()
+        await appApi.getPluginStatus("org.rdk.Bluetooth")
+            .then(()=> this._isBluetoothExist = true)
+            .catch(()=>this._isBluetoothExist = false)
+        await appApi.getPluginStatus("org.rdk.RemoteControl")
+            .then(() =>this._isRCcontrolExist = true)
+            .catch(()=>this._isRCcontrolExist = false)
     }
 
     checkPath(path) {
@@ -66,7 +81,7 @@ export default class LogoScreen extends Lightning.Component {
     }
 
     async _focus() {
-        let path = ((Storage.get('setup') === true) ? 'menu' : 'splash/bluetooth')
+        path = ((Storage.get('setup') === true) ? 'menu' : 'splash/bluetooth')
         var map = { 37: false, 38: false, 39: false, 40: false };
         this.handler = (e) => {
             if (e.keyCode in map) {
@@ -77,21 +92,35 @@ export default class LogoScreen extends Lightning.Component {
             }
         }
         Registry.addEventListener(document, 'keydown', this.handler)
-        await this.btApi.btactivate().then(res => { console.log("btactivate", res) })
-        this.btApi.getPairedDevices()
-            .then(devices => {
-                console.log("LogoScreen: BT device ", devices)
-                if (devices.length > 0 || Storage.get('setup')) {
+
+        if(Storage.get('setup') === true) {
+            this._setState('Next')
+            return true;
+        }
+
+        if(!this._isBluetoothExist && !this._isRCcontrolExist) {
+            this.tag('Error').notify({
+                'title' : "Remote control plugin and Bluetooth plugin are not found",
+                'msg': 'if we want to proceed .Click Ok','count':0
+            })
+            this.tag('Error').isButtonVisible('OK', true)
+            this.tag('Error').alpha = 1
+            this._setState('Ok')
+        } else {
+            if(this._isBluetoothExist) {
+                await this.btApi.btactivate().then(res => { console.log("successfully btactivated", res) })
+                .catch(err => console.log(`error in btactivate`))
+                this.btApi.getPairedDevices().then(devices => {
+                    if (devices.length > 0 || Storage.get('setup')) {
+                        path = this.checkPath(path)
+                    }
+                })
+                .catch(() => {
                     path = this.checkPath(path)
-                }
-            })
-            .catch(() => {
-                console.log('LogoScreen: Paired Device Error')
-                path = this.checkPath(path)
-            })
-        setTimeout(() => {
-            Router.navigate(path)
-        }, 5000)
+                })
+            }
+            this._setState('Next')
+        }
     }
     _unfocus() {
         Registry.removeEventListener(document, 'keydown', this.handler)
@@ -99,4 +128,25 @@ export default class LogoScreen extends Lightning.Component {
     _handleBack() {
         console.error("Initial page; cannot go back.");
     }
+
+    static _states() {
+        return [
+        class Ok extends this {
+           _handleEnter() {
+               path = 'splash/language'
+               this._setState('Next')
+            }
+
+           $exit() {
+            this.tag('Error').alpha = 0
+           }
+        },
+        class Next extends this {
+            $enter() {
+                setTimeout(() => {
+                    Router.navigate(path)
+                }, 5000)
+            }
+        }
+    ]}
 }

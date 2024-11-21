@@ -99,6 +99,22 @@ export default class Failscreen extends Lightning.Component {
                 BorderBottom: {
                     x: 0, y: 300, w: 1558, h: 3, rect: true, mountX: 0.5,
                 },
+                Button: {
+                    x: 0, y: 450, w: 300, mountX: 0.5, h: 60, rect: true, color: 0xfff58233,
+                    Name: {
+                      x: 150,
+                      y: 30,
+                      mount: 0.5,
+                      text: {
+                        text: '',
+                        fontFace: CONFIG.language.font,
+                        fontSize: 22,
+                        textColor: 0xffffffff,
+                        fontStyle: 'bold'
+                      },
+                    },
+                    visible: false
+                },
             },
 
         };
@@ -108,9 +124,15 @@ export default class Failscreen extends Lightning.Component {
         this.tag('Pairing').text = error
     }
 
+    set timerVisible(v) {
+        this.tag('Timer').alpha = v
+    }
+
     _active() {
         this.tag('Timer').text.text =""
-        this.initTimer()
+        if(this.timeout > 0) {
+            this.initTimer()
+        }
     }
     initTimer() {
         this.timeInterval = Registry.setInterval(() => {
@@ -122,6 +144,14 @@ export default class Failscreen extends Lightning.Component {
                 Router.focusPage()
             }
         }, 1000)
+    }
+
+    /**
+     * @param {{ button: any; visible: any; }} v
+     */
+    isButtonVisible(button, visible) {
+        this.tag('Name').text.text = button
+        this.tag('Button').visible = visible
     }
     _inactive() {
         if (this.timeInterval) {

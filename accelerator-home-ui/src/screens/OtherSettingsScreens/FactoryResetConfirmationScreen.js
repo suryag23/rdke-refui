@@ -165,8 +165,8 @@ export default class RebootConfirmationScreen extends Lightning.Component {
             if (rsvolumelvel.success != true) { console.log("resetVolumeLeveller",rsvolumelvel) }
             }
         }
-        let btActivate = await _btApi.btactivate().then(result => console.log("Btactivate",result))
-        let getPairedDevices = await _btApi.getPairedDevices()
+        let btActivate = await _btApi.btactivate().then(result => console.log("Btactivate",result)).catch(err=> console.log(`error while activating bluetooth`))
+        let getPairedDevices = await _btApi.getPairedDevices().then(res=>res).catch(err => 0)
         console.log("getpairedDevices", getPairedDevices)
         for(let i=0 ; i<getPairedDevices.length; i++){
             if(getPairedDevices.length > 0){
@@ -174,7 +174,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                 if(btunpair.success != true){ console.log("btunpair",btunpair) }
             }
         }
-        await RCApi.get().activate().then(()=>{ RCApi.get().factoryReset(); });
+        await RCApi.get().activate().then(()=>{ RCApi.get().factoryReset(); }).catch(err => console.log(`error while resetting remote control`));
         let contollerStat = await appApi.checkStatus("Monitor")
         for(let i=0; i< contollerStat[0].configuration.observables.length; i++){
             let monitorstat = await appApi.monitorStatus(contollerStat[0].configuration.observables[i].callsign).catch(err =>{ console.log("monitorStatus",err) });
