@@ -117,7 +117,7 @@ export const installDACApp = async (app, progress) => {
     app.handle = await LISAApi.get().install(param)
   } catch (error) {
     console.error('DACApi Error on installDACApp: ' + error.code + ' ' + error.message)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on installDACApp: '+JSON.stringify(err), true, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on installDACApp: '+JSON.stringify(error), true, null)
     app.errorCode = error.code;
     return false
   }
