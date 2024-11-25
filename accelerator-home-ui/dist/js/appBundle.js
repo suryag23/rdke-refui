@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Fri, 22 Nov 2024 08:56:33 GMT
+ * Generated: Mon, 25 Nov 2024 15:56:04 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -9981,14 +9981,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     }
   }
 
-  function _defineProperty$1(e, r, t) {
-    return (r = _toPropertyKey$1(r)) in e ? Object.defineProperty(e, r, {
-      value: t,
-      enumerable: !0,
-      configurable: !0,
-      writable: !0
-    }) : e[r] = t, e;
-  }
   function _toPrimitive$1(t, r) {
     if ("object" != typeof t || !t) return t;
     var e = t[Symbol.toPrimitive];
@@ -10002,6 +9994,20 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   function _toPropertyKey$1(t) {
     var i = _toPrimitive$1(t, "string");
     return "symbol" == typeof i ? i : i + "";
+  }
+  function _defineProperty$1(obj, key, value) {
+    key = _toPropertyKey$1(key);
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
   }
 
   class RDKShellApis {
@@ -11656,6 +11662,28 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
       });
     }
+    getPowerStateBeforeReboot() {
+      return new Promise((resolve, reject) => {
+        thunder$j.call('org.rdk.System', 'getPowerStateBeforeReboot').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.error("AppAPI System getPowerStateBeforeReboot failed: ", JSON.stringify(err));
+          Metrics$3.error(Metrics$3.ErrorType.OTHER, "PowerStateFailure", "Error in Thunder System getPowerStateBeforeReboot " + JSON.stringify(err), false, null);
+          reject(err);
+        });
+      });
+    }
+    getPowerStateIsManagedByDevice() {
+      return new Promise((resolve, reject) => {
+        thunder$j.call('org.rdk.System', 'getPowerStateIsManagedByDevice').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.error("AppAPI System getPowerStateIsManagedByDevice failed: ", JSON.stringify(err));
+          Metrics$3.error(Metrics$3.ErrorType.OTHER, "PowerStateFailure", "Error in Thunder System getPowerStateIsManagedByDevice " + JSON.stringify(err), false, null);
+          reject(err);
+        });
+      });
+    }
     getPowerState() {
       return new Promise((resolve, reject) => {
         thunder$j.call('org.rdk.System', 'getPowerState').then(result => {
@@ -12055,11 +12083,12 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
     }
 
-    // 6. Reboot
+    // 6. Reboot and add default reason as FIRMWARE_FAILURE
     reboot() {
+      let reason = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "FIRMWARE_FAILURE";
       return new Promise(resolve => {
         thunder$j.call('org.rdk.System', 'reboot', {
-          "rebootReason": "FIRMWARE_FAILURE"
+          "rebootReason": reason
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35109,7 +35138,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this._focus();
         }
         _handleEnter() {
-          appApi$a.reboot().then(result => {
+          appApi$a.reboot("User Trigger").then(result => {
             console.log('device rebooting' + JSON.stringify(result));
             this._setState('Rebooting');
           });
@@ -36077,7 +36106,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       await appApi$9.clearCache().catch(err => {
         console.error("clearCache error: ", err);
       });
-      await appApi$9.reboot().then(result => {
+      await appApi$9.reboot("User Trigger").then(result => {
         console.log('device rebooting' + JSON.stringify(result));
       });
     }
@@ -62924,7 +62953,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this._focus();
         }
         _handleEnter() {
-          appApi$1.reboot().then(result => {
+          appApi$1.reboot("User Trigger").then(result => {
             console.log("device rebooting" + JSON.stringify(result));
             this._setState("Rebooting");
           });
@@ -65598,9 +65627,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         "Amazon": "n:2",
         "Prime": "n:2"
       };
-      appApi.getPowerState().then(res => {
-        GLOBALS.powerState = res.success ? res.powerState : "ON";
-      });
+      appApi.getPowerStateIsManagedByDevice().then(res => {
+        if (!res.powerStateManagedByDevice) {
+          this._getPowerStatebeforeReboot();
+        } else {
+          appApi.getPowerState().then(res => {
+            GLOBALS.powerState = res.success ? res.powerState : "ON";
+          });
+        }
+      }).catch(err => this._getPowerStatebeforeReboot());
       keyIntercept(GLOBALS.selfClientName).catch(err => {
         console.error("App _init keyIntercept err:", JSON.stringify(err));
       });
@@ -66164,6 +66199,49 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           }
         });
       }
+    }
+    _getPowerStateWhileReboot() {
+      appApi.getPowerState().then(res => {
+        console.log("_getPowerStateWhileReboot: Current power state while reboot ".concat(res.powerState));
+        this._powerStateWhileReboot = res.powerState;
+        this._PowerStateHandlingWhileReboot();
+      }).catch(err => {
+        console.log("_getPowerStateWhileReboot: Error in getting current power state while reboot ".concat(err));
+        this._powerStateWhileReboot = 'STANDBY';
+        this._PowerStateHandlingWhileReboot();
+      });
+    }
+    _PowerStateHandlingWhileReboot() {
+      console.log("_PowerStateHandlingWhileReboot: this._oldPowerStateWhileReboot , ".concat(this._oldPowerStateWhileReboot, " this._powerStateWhileReboot, ").concat(this._powerStateWhileReboot, " "));
+      if (this._oldPowerStateWhileReboot != this._powerStateWhileReboot) {
+        console.log("_PowerStateHandlingWhileReboot: old power state is not equal to powerstate while reboot ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+        appApi.setPowerState(this._oldPowerStateWhileReboot).then(res => {
+          console.log("_PowerStateHandlingWhileReboot: successfully set powerstate to old powerstate ".concat(this._oldPowerStateWhileReboot));
+          if (res.success) {
+            appApi.getPowerState().then(res => {
+              GLOBALS.powerState = res.powerState;
+            });
+            console.log("_PowerStateHandlingWhileReboot: powerstate after setting to new powerstate ".concat(GLOBALS.powerState, " and "));
+          }
+        }).catch(err => {
+          console.log("_PowerStateHandlingWhileReboot: Rebooting the device as set PowerState failed due to ".concat(err));
+          appApi.reboot("setPowerState Api Failure");
+        });
+      } else {
+        console.log("_PowerStateHandlingWhileReboot: power state before reboot and curren tpowerstate is same ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+        GLOBALS.powerState = this._powerStateWhileReboot;
+      }
+    }
+    _getPowerStatebeforeReboot() {
+      appApi.getPowerStateBeforeReboot().then(res => {
+        console.log("_getPowerStatebeforeReboot: getpowerstate before reboot ".concat(res.state));
+        this._oldPowerStateWhileReboot = res.state;
+        this._getPowerStateWhileReboot();
+      }).catch(err => {
+        console.log("_getPowerStatebeforeReboot: getPowerStateBeforeReboot error ".concat(err) + " setting powerstate to ON");
+        this._oldPowerStateWhileReboot = 'ON';
+        this._getPowerStateWhileReboot();
+      });
     }
     _firstEnable() {
       thunder.on("org.rdk.System", "onSystemPowerStateChanged", notification => {
