@@ -103,7 +103,7 @@ export default class WiFiItem extends Lightning.Component {
         x: 40,
         y: 45,
         mountY: 0.5,
-        text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
+        text: { text: `${item.ssid} - ${item.frequency}G`, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
       },
 
       Right: {

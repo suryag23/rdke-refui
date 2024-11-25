@@ -223,11 +223,15 @@ export default class WiFiScreen extends Lightning.Component {
         })
       }
 
+      const seenSSIDs = new Set();
       this._otherList = ssids.filter(device => {
         result = this._pairedList.map(a => a.ssid)
-        if (result.includes(device.ssid)) {
+        const uniqueKey = `${device.ssid}_${device.frequency}`;
+        if (result.includes(device.ssid)||seenSSIDs.has(uniqueKey)) {
           return false
-        } else return device
+        }
+        seenSSIDs.add(uniqueKey)
+        return device
       })
       this.tag('Networks.AvailableNetworks').h = this._otherList.length * 90
       this.tag('Networks.AvailableNetworks').tag('List').h = this._otherList.length * 90

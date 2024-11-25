@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Thu, 21 Nov 2024 15:09:04 GMT
+ * Generated: Fri, 22 Nov 2024 08:56:33 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = (cb, delay) => {
+  var easeExecution = ((cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = (App, appSettings, platformSettings, appData) => {
+  var Launch = ((App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -25331,9 +25331,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = (styles, theme) => {
+  var createStyles = ((styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  };
+  });
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -29785,7 +29785,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           y: 45,
           mountY: 0.5,
           text: {
-            text: item.ssid,
+            text: "".concat(item.ssid, " - ").concat(item.frequency, "G"),
             fontSize: 25,
             textColor: COLORS.textColor,
             fontFace: CONFIG.language.font
@@ -30062,11 +30062,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             };
           });
         }
+        const seenSSIDs = new Set();
         this._otherList = ssids.filter(device => {
           result = this._pairedList.map(a => a.ssid);
-          if (result.includes(device.ssid)) {
+          const uniqueKey = "".concat(device.ssid, "_").concat(device.frequency);
+          if (result.includes(device.ssid) || seenSSIDs.has(uniqueKey)) {
             return false;
-          } else return device;
+          }
+          seenSSIDs.add(uniqueKey);
+          return device;
         });
         this.tag('Networks.AvailableNetworks').h = this._otherList.length * 90;
         this.tag('Networks.AvailableNetworks').tag('List').h = this._otherList.length * 90;
@@ -40735,11 +40739,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             item: item
           };
         });
+        const seenSSIDs = new Set();
         this._otherList = ssids.filter(device => {
           result = this._pairedList.map(a => a.ssid);
-          if (result.includes(device.ssid)) {
+          const uniqueKey = "".concat(device.ssid, "_").concat(device.frequency);
+          if (result.includes(device.ssid) || seenSSIDs.has(uniqueKey)) {
             return false;
-          } else return device;
+          }
+          seenSSIDs.add(uniqueKey);
+          return device;
         });
         this.tag('Networks.AvailableNetworks').h = this._otherList.length * 90;
         this.tag('Networks.AvailableNetworks').tag('List').h = this._otherList.length * 90;
@@ -46871,7 +46879,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       app.handle = await LISA.get().install(param);
     } catch (error) {
       console.error('DACApi Error on installDACApp: ' + error.code + ' ' + error.message);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on installDACApp: ' + JSON.stringify(err), true, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on installDACApp: ' + JSON.stringify(error), true, null);
       app.errorCode = error.code;
       return false;
     }
