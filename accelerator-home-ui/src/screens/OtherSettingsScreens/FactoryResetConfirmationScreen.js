@@ -195,7 +195,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
         let wifidisconnect = await WiFi.get().disconnect().catch(err =>{ console.error("wifidisconnect",err) });
         if (wifidisconnect.success != true) { console.log("wifidisconnect",wifidisconnect) }
         await appApi.clearCache().catch(err => { console.error("clearCache error: ", err)})
-        await appApi.reboot().then(result => { console.log('device rebooting' + JSON.stringify(result))})
+        await appApi.reboot("User Trigger").then(result => { console.log('device rebooting' + JSON.stringify(result))})
     }
 
     static _states() {

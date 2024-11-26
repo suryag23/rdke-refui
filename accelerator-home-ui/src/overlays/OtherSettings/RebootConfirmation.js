@@ -145,7 +145,7 @@ export default class RebootConfirmation extends Lightning.Component {
           this._focus();
         }
         _handleEnter() {
-          appApi.reboot().then((result) => {
+          appApi.reboot("User Trigger").then((result) => {
             console.log("device rebooting" + JSON.stringify(result));
             this._setState("Rebooting");
           });

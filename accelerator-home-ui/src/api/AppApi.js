@@ -1126,6 +1126,30 @@ export default class AppApi {
     })
   }
 
+  getPowerStateBeforeReboot() {
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.System', 'getPowerStateBeforeReboot').then(result => {
+        resolve(result);
+      }).catch(err => {
+        console.error("AppAPI System getPowerStateBeforeReboot failed: ", JSON.stringify(err));
+        Metrics.error(Metrics.ErrorType.OTHER, "PowerStateFailure", "Error in Thunder System getPowerStateBeforeReboot " + JSON.stringify(err), false, null);
+        reject(err);
+      });
+    });
+  }
+
+  getPowerStateIsManagedByDevice() {
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.System', 'getPowerStateIsManagedByDevice').then(result => {
+        resolve(result);
+      }).catch(err => {
+        console.error("AppAPI System getPowerStateIsManagedByDevice failed: ", JSON.stringify(err));
+        Metrics.error(Metrics.ErrorType.OTHER, "PowerStateFailure", "Error in Thunder System getPowerStateIsManagedByDevice " + JSON.stringify(err), false, null);
+        reject(err);
+      });
+    });
+  }
+
   getPowerState() {
     return new Promise((resolve, reject) => {
       thunder
@@ -1614,12 +1638,12 @@ export default class AppApi {
     })
   }
 
-  // 6. Reboot
-  reboot() {
+  // 6. Reboot and add default reason as FIRMWARE_FAILURE
+  reboot(reason = "FIRMWARE_FAILURE") {
     return new Promise((resolve) => {
       thunder
         .call('org.rdk.System', 'reboot', {
-          "rebootReason": "FIRMWARE_FAILURE"
+          "rebootReason": reason
         })
         .then(result => {
           resolve(result)

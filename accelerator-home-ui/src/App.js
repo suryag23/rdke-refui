@@ -506,9 +506,15 @@ export default class App extends Router.App {
       "Amazon": "n:2",
       "Prime": "n:2"
     }
-    appApi.getPowerState().then(res =>{
-      GLOBALS.powerState = res.success ? res.powerState : "ON"
-    })
+    appApi.getPowerStateIsManagedByDevice().then(res => {
+      if (!res.powerStateManagedByDevice) {
+        this._getPowerStatebeforeReboot();
+      } else {
+        appApi.getPowerState().then(res => {
+          GLOBALS.powerState = res.success ? res.powerState : "ON";
+        });
+      }
+    }).catch(err => this._getPowerStatebeforeReboot());
     keyIntercept(GLOBALS.selfClientName).catch(err => {
       console.error("App _init keyIntercept err:", JSON.stringify(err));
     });
@@ -1080,6 +1086,52 @@ export default class App extends Router.App {
         }
       })
     }
+  }
+
+  _getPowerStateWhileReboot() {
+    appApi.getPowerState().then(res => {
+      console.log("_getPowerStateWhileReboot: Current power state while reboot ".concat(res.powerState));
+      this._powerStateWhileReboot = res.powerState;
+      this._PowerStateHandlingWhileReboot();
+    }).catch(err => {
+      console.log("_getPowerStateWhileReboot: Error in getting current power state while reboot ".concat(err));
+      this._powerStateWhileReboot = 'STANDBY';
+      this._PowerStateHandlingWhileReboot();
+    });
+  }
+
+  _PowerStateHandlingWhileReboot() {
+    console.log("_PowerStateHandlingWhileReboot: this._oldPowerStateWhileReboot , ".concat(this._oldPowerStateWhileReboot, " this._powerStateWhileReboot, ").concat(this._powerStateWhileReboot, " "));
+    if (this._oldPowerStateWhileReboot != this._powerStateWhileReboot) {
+      console.log("_PowerStateHandlingWhileReboot: old power state is not equal to powerstate while reboot ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+      appApi.setPowerState(this._oldPowerStateWhileReboot).then(res => {
+        console.log("_PowerStateHandlingWhileReboot: successfully set powerstate to old powerstate ".concat(this._oldPowerStateWhileReboot));
+        if (res.success) {
+          appApi.getPowerState().then(res => {
+            GLOBALS.powerState = res.powerState;
+          });
+          console.log("_PowerStateHandlingWhileReboot: powerstate after setting to new powerstate ".concat(GLOBALS.powerState, " and "));
+        }
+      }).catch(err => {
+        console.log("_PowerStateHandlingWhileReboot: Rebooting the device as set PowerState failed due to ".concat(err));
+        appApi.reboot("setPowerState Api Failure");
+      });
+    } else {
+      console.log("_PowerStateHandlingWhileReboot: power state before reboot and curren tpowerstate is same ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+      GLOBALS.powerState = this._powerStateWhileReboot;
+    }
+  }
+
+  _getPowerStatebeforeReboot() {
+    appApi.getPowerStateBeforeReboot().then(res => {
+      console.log("_getPowerStatebeforeReboot: getpowerstate before reboot ".concat(res.state));
+      this._oldPowerStateWhileReboot = res.state;
+      this._getPowerStateWhileReboot();
+    }).catch(err => {
+      console.log("_getPowerStatebeforeReboot: getPowerStateBeforeReboot error ".concat(err) + " setting powerstate to ON");
+      this._oldPowerStateWhileReboot = 'ON';
+      this._getPowerStateWhileReboot();
+    });
   }
 
   _firstEnable() {
