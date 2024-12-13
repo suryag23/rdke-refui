@@ -24,7 +24,7 @@ const thunder = ThunderJS(CONFIG.thunderConfig)
 
 export default class CECApi {
     activate() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             thunder.Controller.activate({ callsign: 'org.rdk.HdmiCecSource' })
                 .then(() => {
                     resolve(true)
@@ -32,11 +32,12 @@ export default class CECApi {
                 .catch(err => {
                     console.log('CEC Error Activation', err)
                     Metrics.error(Metrics.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource activate "+JSON.stringify(err), false, null)
+                    reject(err)
                 })
         })
     }
     deactivate() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             thunder.Controller.deactivate({ callsign: 'org.rdk.HdmiCecSource' })
                 .then(() => {
                     resolve(true)
@@ -44,6 +45,7 @@ export default class CECApi {
                 .catch(err => {
                     console.log('CEC Error Deactivation', err)
                     Metrics.error(Metrics.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource deactivate "+JSON.stringify(err), false, null)
+                    reject(err)
                 })
         })
     }

@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Mon, 09 Dec 2024 14:31:55 GMT
+ * Generated: Fri, 13 Dec 2024 06:25:53 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6378,6 +6378,8 @@ var APP_accelerator_home_ui = (function () {
     }
   };
   const GLOBALS = {
+    _previousapp_onActiveSourceStatusUpdated: null,
+    _previousapp_onDisplayConnectionChanged: null,
     _constantselfClientName: window.__firebolt && window.__firebolt.endpoint !== undefined ? "FireboltMainApp-refui" : "ResidentApp",
     get selfClientName() {
       return this._constantselfClientName;
@@ -6395,6 +6397,18 @@ var APP_accelerator_home_ui = (function () {
     },
     get powerState() {
       return this._currentPowerState;
+    },
+    set previousapp_onDisplayConnectionChanged(app) {
+      this._previousapp_onDisplayConnectionChanged = app;
+    },
+    get previousapp_onDisplayConnectionChanged() {
+      return this._previousapp_onDisplayConnectionChanged;
+    },
+    set previousapp_onActiveSourceStatusUpdated(app) {
+      this._previousapp_onActiveSourceStatusUpdated = app;
+    },
+    get previousapp_onActiveSourceStatusUpdated() {
+      return this._previousapp_onActiveSourceStatusUpdated;
     }
   };
 
@@ -33722,7 +33736,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   const thunder$e = thunderJS$1(CONFIG.thunderConfig);
   class CECApi {
     activate() {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         thunder$e.Controller.activate({
           callsign: 'org.rdk.HdmiCecSource'
         }).then(() => {
@@ -33730,11 +33744,12 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }).catch(err => {
           console.log('CEC Error Activation', err);
           Metrics$3.error(Metrics$3.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource activate " + JSON.stringify(err), false, null);
+          reject(err);
         });
       });
     }
     deactivate() {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         thunder$e.Controller.deactivate({
           callsign: 'org.rdk.HdmiCecSource'
         }).then(() => {
@@ -33742,6 +33757,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }).catch(err => {
           console.log('CEC Error Deactivation', err);
           Metrics$3.error(Metrics$3.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource deactivate " + JSON.stringify(err), false, null);
+          reject(err);
         });
       });
     }
@@ -65747,10 +65763,11 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this.xcastApi.onApplicationStateChanged(params);
           params = null;
         }
+        if (noti.callsign === "org.rdk.HdmiCecSource") {
+          this.SubscribeToHdmiCecSourcevent(noti.data.state, self.appIdentifiers);
+        }
       });
       this._subscribeToRDKShellNotifications();
-      this._subscribeToIOPortNotifications();
-      this._subscribeToControlNotifications();
       appApi.getPluginStatus("Cobalt").then(() => {
         /* Loop through YouTube variants and set respective urls. */
         JSON.parse(JSON.stringify(appListInfo)).forEach(appInfo => {
@@ -65803,7 +65820,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
       //video info change events begin here---------------------
       /********************   RDKUI-341 CHANGES - DEEP SLEEP/LIGHT SLEEP **************************/
-
+      this._subscribeToControlNotifications();
       let cachedPowerState = Storage$1.get('SLEEPING');
       console.log('cached power state', cachedPowerState);
       console.log(typeof cachedPowerState);
@@ -65823,30 +65840,59 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       /********************   RDKUI-303 - PAGE VISIBILITY API **************************/
 
       //ACTIVATING HDMI CEC PLUGIN
-      cecApi.activate().then(() => {
-        let getfriendlyname, getosdname;
-        setTimeout(() => {
-          xcastApi.getFriendlyName().then(res => {
-            getfriendlyname = res.friendlyname;
-            console.log("XcastApi getFriendlyName :" + getfriendlyname);
-          }).catch(err => {
-            console.error('XcastApi getFriendlyName Error: ', err);
+      appApi.getPluginStatus('org.rdk.HdmiCecSource').then(result => {
+        if (result[0].state === "activated") {
+          this.SubscribeToHdmiCecSourcevent(result[0].state, self.appIdentifiers);
+          let getfriendlyname, getosdname;
+          setTimeout(() => {
+            xcastApi.getFriendlyName().then(res => {
+              getfriendlyname = res.friendlyname;
+              console.log("XcastApi getFriendlyName :" + getfriendlyname);
+            }).catch(err => {
+              console.error('XcastApi getFriendlyName Error: ', err);
+            });
+            cecApi.getOSDName().then(result => {
+              getosdname = result.name;
+              console.log("CECApi getOSDName :" + getosdname);
+              if (getfriendlyname !== getosdname) {
+                cecApi.setOSDName(getfriendlyname);
+              }
+            }).catch(err => {
+              console.error('CECApi getOSDName Error :', err);
+            });
+          }, 5000);
+          cecApi.getActiveSourceStatus().then(res => {
+            Storage$1.set("UICacheCECActiveSourceStatus", res);
+            console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
           });
-          cecApi.getOSDName().then(result => {
-            getosdname = result.name;
-            console.log("CECApi getOSDName :" + getosdname);
-            if (getfriendlyname !== getosdname) {
-              cecApi.setOSDName(getfriendlyname);
-            }
-          }).catch(err => {
-            console.error('CECApi getOSDName Error :', err);
-          });
-        }, 5000);
-        cecApi.getActiveSourceStatus().then(res => {
-          Storage$1.set("UICacheCECActiveSourceStatus", res);
-          console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
-        });
-      }).catch(err => console.log(err));
+        } else {
+          cecApi.activate().then(() => {
+            let getfriendlyname, getosdname;
+            setTimeout(() => {
+              xcastApi.getFriendlyName().then(res => {
+                getfriendlyname = res.friendlyname;
+                console.log("XcastApi getFriendlyName :" + getfriendlyname);
+              }).catch(err => {
+                console.error('XcastApi getFriendlyName Error: ', err);
+              });
+              cecApi.getOSDName().then(result => {
+                getosdname = result.name;
+                console.log("CECApi getOSDName :" + getosdname);
+                if (getfriendlyname !== getosdname) {
+                  cecApi.setOSDName(getfriendlyname);
+                }
+              }).catch(err => {
+                console.error('CECApi getOSDName Error :', err);
+              });
+            }, 5000);
+            cecApi.getActiveSourceStatus().then(res => {
+              Storage$1.set("UICacheCECActiveSourceStatus", res);
+              console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
+            });
+          }).catch(err => console.log(err));
+        }
+      });
+      this._subscribeToIOPortNotifications();
       this._updateLanguageToDefault();
     }
     _subscribeToRDKShellNotifications() {
@@ -66049,23 +66095,32 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       //UNPLUG/PLUG HDMI
       let self = this;
       thunder.on("org.rdk.HdcpProfile", "onDisplayConnectionChanged", notification => {
-        console.warn("onDisplayConnectionChanged", notification);
+        GLOBALS.previousapp_onActiveSourceStatusUpdated = null;
         console.log(new Date().toISOString() + " onDisplayConnectionChanged ", notification.HDCPStatus);
         let temp = notification.HDCPStatus;
         if (!Storage$1.get("ResolutionChangeInProgress") && temp.isConnected != Storage$1.get("UICacheonDisplayConnectionChanged")) {
           if (temp.isConnected) {
             let currentApp = GLOBALS.topmostApp;
+            if (GLOBALS.previousapp_onDisplayConnectionChanged !== null) {
+              currentApp = GLOBALS.previousapp_onDisplayConnectionChanged;
+            }
+            if (currentApp === "ResidentApp") {
+              Router.navigate(Storage$1.get("lastVisitedRoute"));
+            }
             let launchLocation = Storage$1.get(currentApp + "LaunchLocation");
             console.log("App HdcpProfile onDisplayConnectionChanged current app is:", currentApp);
             let params = {
               launchLocation: launchLocation,
               appIdentifier: self.appIdentifiers[currentApp]
             };
-            if (currentApp.startsWith("YouTube")) {
+            if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
               params["url"] = Storage$1.get(currentApp + "DefaultURL");
               appApi.getPluginStatus(currentApp).then(result => {
-                if (result[0].state === (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
-                  appApi.launchApp(currentApp, params).catch(err => {
+                const isAppSuspendedEnabled = Settings$2.get("platform", "enableAppSuspended");
+                const expectedState = isAppSuspendedEnabled ? ["hibernated", "suspended"] : ["deactivated"];
+                if (expectedState.includes(result[0].state)) {
+                  appApi.launchApp(currentApp, params).then(() => GLOBALS.previousapp_onDisplayConnectionChanged = null).catch(err => {
+                    Router.navigate(Storage$1.get("lastVisitedRoute"));
                     console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
                   });
                 } else {
@@ -66075,12 +66130,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             }
           } else {
             let currentApp = GLOBALS.topmostApp;
-            if (currentApp.startsWith("YouTube")) {
+            if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
               appApi.getPluginStatus(currentApp).then(result => {
                 if (result[0].state !== (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
-                  appApi.exitApp(currentApp, true);
+                  appApi.exitApp(currentApp, true).then(() => GLOBALS.previousapp_onDisplayConnectionChanged = currentApp).catch(err => {
+                    Router.navigate(Storage$1.get("lastVisitedRoute"));
+                    console.error("Error in exit app ".concat(currentApp, " : ") + JSON.stringify(err));
+                  });
                 } else {
-                  console.log("App HdcpProfile onDisplayConnectionChanged skipping; " + currentApp + " is already: ", JSON.stringify(result[0].state));
+                  console.log("App HdcpProfile onDsisplayConnectionChanged skipping; " + currentApp + " is already: ", JSON.stringify(result[0].state));
                 }
               });
             }
@@ -66091,50 +66149,68 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           console.log("App HdcpProfile ResolutionChangeInProgress: " + Storage$1.get("ResolutionChangeInProgress") + " UICacheonDisplayConnectionChanged: " + Storage$1.get("UICacheonDisplayConnectionChanged"));
         }
       });
-
-      //CHANGING HDMI INPUT PORT
-
-      thunder.on("org.rdk.HdmiCecSource", "onActiveSourceStatusUpdated", notification => {
-        console.warn(new Date().toISOString() + " onActiveSourceStatusUpdated ", notification);
-        if (notification.status != Storage$1.get("UICacheCECActiveSourceStatus")) {
-          if (notification.status) {
-            let currentApp = GLOBALS.topmostApp;
-            let launchLocation = Storage$1.get(currentApp + "LaunchLocation");
-            console.log("current app is ", currentApp);
-            let params = {
-              launchLocation: launchLocation,
-              appIdentifier: self.appIdentifiers[currentApp]
-            };
-            if (currentApp.startsWith("YouTube")) {
-              params["url"] = Storage$1.get(currentApp + "DefaultURL");
-              appApi.getPluginStatus(currentApp).then(result => {
-                if (result[0].state === (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
-                  appApi.launchApp(currentApp, params).catch(err => {
-                    console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+    }
+    SubscribeToHdmiCecSourcevent(state, appIdentifiers) {
+      switch (state) {
+        case "activated":
+          this.onApplicationStateChanged = thunder.on("org.rdk.HdmiCecSource", "onActiveSourceStatusUpdated", notification => {
+            console.log(new Date().toISOString() + " onActiveSourceStatusUpdated ", notification);
+            if (notification.status != Storage$1.get("UICacheCECActiveSourceStatus")) {
+              if (notification.status) {
+                let currentApp = GLOBALS.topmostApp;
+                if (GLOBALS.previousapp_onActiveSourceStatusUpdated !== null) {
+                  currentApp = GLOBALS.previousapp_onActiveSourceStatusUpdated;
+                }
+                if (currentApp === "ResidentApp") {
+                  Router.navigate(Storage$1.get("lastVisitedRoute"));
+                }
+                let launchLocation = Storage$1.get(currentApp + "LaunchLocation");
+                console.log("current app is ", currentApp);
+                let params = {
+                  launchLocation: launchLocation,
+                  appIdentifier: appIdentifiers[currentApp]
+                };
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  params["url"] = Storage$1.get(currentApp + "DefaultURL");
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    const isAppSuspendedEnabled = Settings$2.get("platform", "enableAppSuspended");
+                    const expectedState = isAppSuspendedEnabled ? ["hibernated", "suspended"] : ["deactivated"];
+                    if (expectedState.includes(result[0].state)) {
+                      appApi.launchApp(currentApp, params).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = null).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
                   });
-                } else {
-                  console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
                 }
-              });
-            }
-          } else {
-            let currentApp = GLOBALS.topmostApp;
-            if (currentApp.startsWith("YouTube")) {
-              appApi.getPluginStatus(currentApp).then(result => {
-                if (result[0].state !== (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
-                  appApi.exitApp(currentApp, true);
-                } else {
-                  console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+              } else {
+                let currentApp = GLOBALS.topmostApp;
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    if (result[0].state !== (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
+                      appApi.exitApp(currentApp, true).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = currentApp).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
+                  });
                 }
-              });
+              }
+              Storage$1.set("UICacheCECActiveSourceStatus", notification.status);
+              console.log("App HdmiCecSource onActiveSourceStatusUpdated UICacheCECActiveSourceStatus:", Storage$1.get("UICacheCECActiveSourceStatus"));
+            } else {
+              console.warn("App HdmiCecSource onActiveSourceStatusUpdated discarding.");
             }
-          }
-          Storage$1.set("UICacheCECActiveSourceStatus", notification.status);
-          console.log("App HdmiCecSource onActiveSourceStatusUpdated UICacheCECActiveSourceStatus:", Storage$1.get("UICacheCECActiveSourceStatus"));
-        } else {
-          console.warn("App HdmiCecSource onActiveSourceStatusUpdated discarding.");
-        }
-      });
+          });
+          break;
+        case "deactivated":
+          this.onApplicationStateChanged.dispose();
+          break;
+      }
     }
     _getPowerStateWhileReboot() {
       appApi.getPowerState().then(res => {

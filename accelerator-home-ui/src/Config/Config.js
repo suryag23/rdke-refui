@@ -68,6 +68,8 @@ export var CONFIG = {
 }
 
 export const GLOBALS = {
+  _previousapp_onActiveSourceStatusUpdated:null,
+  _previousapp_onDisplayConnectionChanged:null,
   _constantselfClientName: window.__firebolt && window.__firebolt.endpoint !== undefined ? "FireboltMainApp-refui" : "ResidentApp",
   get selfClientName() {
     return this._constantselfClientName;
@@ -85,5 +87,18 @@ export const GLOBALS = {
   },
   get powerState() {
     return this._currentPowerState
-  }
+  },
+  set previousapp_onDisplayConnectionChanged(app){
+    this._previousapp_onDisplayConnectionChanged = app
+  },
+  get previousapp_onDisplayConnectionChanged(){
+    return this._previousapp_onDisplayConnectionChanged
+  },
+  set previousapp_onActiveSourceStatusUpdated(app){
+    this._previousapp_onActiveSourceStatusUpdated = app
+  },
+  get previousapp_onActiveSourceStatusUpdated(){
+    return this._previousapp_onActiveSourceStatusUpdated
+  },
+
 }
