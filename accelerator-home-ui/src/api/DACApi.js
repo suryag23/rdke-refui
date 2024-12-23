@@ -148,7 +148,7 @@ export const uninstallDACApp = async (app, progress) => {
     await LISAApi.get().uninstall(param)
   } catch (error) {
     console.error('DACApi Error on LISA uninstall: ' + error.code + ' ' + error.message)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: '+JSON.stringify(err), true, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: '+JSON.stringify(error), true, null)
     app.errorCode = error.code;
     return false
   }
@@ -165,7 +165,7 @@ export const isInstalledDACApp = async (app) => {
     })
   } catch (error) {
     console.error('DACApi Error on LISA getStorageDetails: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getStorageDetails: '+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getStorageDetails: '+JSON.stringify(error), false, null)
     return false
   }
 
@@ -178,7 +178,7 @@ export const getInstalledDACApps = async () => {
     result = await LISAApi.get().getList()
   } catch (error) {
     console.error('DACApi Error on LISA getList: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: '+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: '+JSON.stringify(error), false, null)
   }
 
   return result == null ? [] : (result.apps ? result.apps : [])
@@ -228,7 +228,7 @@ export const getDeviceName = async () => {
     result = await thunderJS().DeviceInfo.systeminfo()
   } catch (error) {
     console.error('DAC Api Error on systeminfo: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: '+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: '+JSON.stringify(error), false, null)
   }
   return result == null ? "unknown" : result.devicename
 }
@@ -255,7 +255,7 @@ export const startDACApp = async (app) => {
     }
   } catch (error) {
     console.error('DACApi Error on launchApplication: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: '+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: '+JSON.stringify(error), false, null)
     return false
   }
 
@@ -290,7 +290,7 @@ export const startDACApp = async (app) => {
     result = await thunderJS()['org.rdk.RDKShell'].moveToFront({ client: app.id })
   } catch (error) {
     console.log('DACApi Error on moveToFront: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError"+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError"+JSON.stringify(error), false, null)
   }
 
   try {
@@ -298,7 +298,7 @@ export const startDACApp = async (app) => {
     GLOBALS.topmostApp = (app.id + ';' + app.version + ';' + app.type);
   } catch (error) {
     console.log('DACApi Error on setFocus: ', error)
-    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus"+JSON.stringify(err), false, null)
+    Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus"+JSON.stringify(error), false, null)
     return false
   }
   return result == null ? false : result.success
@@ -325,13 +325,13 @@ export const getAppCatalogInfo = async () => {
               appListArray = result["applications"];
             } else {
               console.error("DACApi result does not have applications")
-              Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null)
+              Metrics.error(Metrics.ErrorType.OTHER, "DACApiError","DACApi result does not have applications", false, null)
               Storage.set("CloudAppStore", true);
             }
           })
           .catch(error => {
             console.error("DACApi fetch error from local server", error)
-            Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null)
+            Metrics.error(Metrics.ErrorType.OTHER, "DACApiError", JSON.stringify(error), false, null)
             Storage.set("CloudAppStore", true);
           });
       }

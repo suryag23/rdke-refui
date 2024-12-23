@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Fri, 06 Dec 2024 15:07:29 GMT
+ * Generated: Mon, 23 Dec 2024 11:01:37 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = ((cb, delay) => {
+  var easeExecution = (cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = ((App, appSettings, platformSettings, appData) => {
+  var Launch = (App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  });
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5895,6 +5895,29 @@ var APP_accelerator_home_ui = (function () {
       }
       return obj;
     }
+  }
+
+  function _defineProperty$1(e, r, t) {
+    return (r = _toPropertyKey$1(r)) in e ? Object.defineProperty(e, r, {
+      value: t,
+      enumerable: !0,
+      configurable: !0,
+      writable: !0
+    }) : e[r] = t, e;
+  }
+  function _toPrimitive$1(t, r) {
+    if ("object" != typeof t || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != typeof i) return i;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t);
+  }
+  function _toPropertyKey$1(t) {
+    var i = _toPrimitive$1(t, "string");
+    return "symbol" == typeof i ? i : i + "";
   }
 
   /**
@@ -10033,29 +10056,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
       });
     }
-  }
-
-  function _defineProperty$1(e, r, t) {
-    return (r = _toPropertyKey$1(r)) in e ? Object.defineProperty(e, r, {
-      value: t,
-      enumerable: !0,
-      configurable: !0,
-      writable: !0
-    }) : e[r] = t, e;
-  }
-  function _toPrimitive$1(t, r) {
-    if ("object" != typeof t || !t) return t;
-    var e = t[Symbol.toPrimitive];
-    if (void 0 !== e) {
-      var i = e.call(t, r || "default");
-      if ("object" != typeof i) return i;
-      throw new TypeError("@@toPrimitive must return a primitive value.");
-    }
-    return ("string" === r ? String : Number)(t);
-  }
-  function _toPropertyKey$1(t) {
-    var i = _toPrimitive$1(t, "string");
-    return "symbol" == typeof i ? i : i + "";
   }
 
   class RDKShellApis {
@@ -25408,9 +25408,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = ((styles, theme) => {
+  var createStyles = (styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  });
+  };
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -33736,7 +33736,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   const thunder$e = thunderJS$1(CONFIG.thunderConfig);
   class CECApi {
     activate() {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         thunder$e.Controller.activate({
           callsign: 'org.rdk.HdmiCecSource'
         }).then(() => {
@@ -33744,11 +33744,12 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }).catch(err => {
           console.log('CEC Error Activation', err);
           Metrics$3.error(Metrics$3.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource activate " + JSON.stringify(err), false, null);
+          reject(err);
         });
       });
     }
     deactivate() {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         thunder$e.Controller.deactivate({
           callsign: 'org.rdk.HdmiCecSource'
         }).then(() => {
@@ -33756,6 +33757,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }).catch(err => {
           console.log('CEC Error Deactivation', err);
           Metrics$3.error(Metrics$3.ErrorType.OTHER, "HdmiCecSourceError", "Error while Thunder Controller HdmiCecSource deactivate " + JSON.stringify(err), false, null);
+          reject(err);
         });
       });
     }
@@ -47000,7 +47002,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       await LISA.get().uninstall(param);
     } catch (error) {
       console.error('DACApi Error on LISA uninstall: ' + error.code + ' ' + error.message);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: ' + JSON.stringify(err), true, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: ' + JSON.stringify(error), true, null);
       app.errorCode = error.code;
       return false;
     }
@@ -47012,7 +47014,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       result = await LISA.get().getList();
     } catch (error) {
       console.error('DACApi Error on LISA getList: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: ' + JSON.stringify(error), false, null);
     }
     return result == null ? [] : result.apps ? result.apps : [];
   };
@@ -47057,7 +47059,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       result = await thunderJS().DeviceInfo.systeminfo();
     } catch (error) {
       console.error('DAC Api Error on systeminfo: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: ' + JSON.stringify(error), false, null);
     }
     return result == null ? "unknown" : result.devicename;
   };
@@ -47091,7 +47093,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       }
     } catch (error) {
       console.error('DACApi Error on launchApplication: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: ' + JSON.stringify(error), false, null);
       return false;
     }
     if (result == null) {
@@ -47132,7 +47134,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
     } catch (error) {
       console.log('DACApi Error on moveToFront: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError" + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError" + JSON.stringify(error), false, null);
     }
     try {
       result = await thunderJS()['org.rdk.RDKShell'].setFocus({
@@ -47141,7 +47143,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       GLOBALS.topmostApp = app.id + ';' + app.version + ';' + app.type;
     } catch (error) {
       console.log('DACApi Error on setFocus: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus" + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus" + JSON.stringify(error), false, null);
       return false;
     }
     return result == null ? false : result.success;
@@ -47169,12 +47171,12 @@ preferredAudioLanguages:   preferredAudioLanguages$1
               appListArray = result["applications"];
             } else {
               console.error("DACApi result does not have applications");
-              Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null);
+              Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "DACApi result does not have applications", false, null);
               Storage$1.set("CloudAppStore", true);
             }
           }).catch(error => {
             console.error("DACApi fetch error from local server", error);
-            Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null);
+            Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(error), false, null);
             Storage$1.set("CloudAppStore", true);
           });
         } else if (Storage$1.get("CloudAppStore") && data != null && Object.prototype.hasOwnProperty.call(data, "app-catalog-cloud")) {
@@ -47864,7 +47866,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           type: Progress,
           x: 50,
           y: 80,
-          w: 200
+          w: 200,
+          alpha: 1
         }
       };
     }
@@ -47919,8 +47922,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }
       }
       if (Object.prototype.hasOwnProperty.call(this._app, "errorCode")) {
+        this.tag('StatusProgress').alpha = 0;
         this.tag('Overlay.OverlayText').text.text = Language$1.translate('Error') + ':' + this._app.errorCode;
-        this.tag("OverlayText").text.text = this._app.code;
+        // this.tag("OverlayText").text.text = this._app.code;
         this.tag("Overlay").alpha = 0.7;
         this.tag("OverlayText").alpha = 1;
       }
@@ -65224,24 +65228,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     }
   }
 
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
   var powerState = 'ON';
   var AlexaAudioplayerActive = false;
   var thunder = thunderJS$1(CONFIG.thunderConfig);
@@ -65251,16 +65237,20 @@ preferredAudioLanguages:   preferredAudioLanguages$1
   var xcastApi = new XcastApi();
   var voiceApi = new VoiceApi();
   class App extends Router.App {
-    _handleAppClose() {
-      console.error("_handleAppClose triggered.");
-      this.toggleExitDialog().then(confirmed => {
-        console.error("_handleAppClose triggered should not reach here.");
-        // RefUI is not supposed to exit. Prevent that control.
-        if (confirmed) {
-          console.error("_handleAppClose calling closeApp; should not reach here.");
-          this.application.closeApp();
-        }
+    constructor() {
+      super(...arguments);
+      _defineProperty$1(this, "launchFeaturedApp", appName => {
+        let params = {
+          launchLocation: "dedicatedButton",
+          appIdentifier: this.appIdentifiers[appName]
+        };
+        appApi.launchApp(appName, params).catch(err => {
+          console.error("Error in launching ".concat(appName, " via dedicated key: ") + JSON.stringify(err));
+        });
       });
+    }
+    _handleAppClose() {
+      this.application.closeApp();
     }
     static getFonts() {
       return [{
@@ -65361,8 +65351,10 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
         return true;
       }
-      let self = this;
       this.$hideImage(0);
+      return this._performKeyPressOPerations(key);
+    }
+    _performKeyPressOPerations(key) {
       if (key.keyCode == keyMap.Home && !Router.isNavigating()) {
         if (GLOBALS.topmostApp.includes("dac.native")) {
           this.jumpToRoute("apps");
@@ -65378,17 +65370,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           } else {
             Router.navigate("tv-overlay/inputs", false);
           }
-          // appApi.setVisibility('ResidentApp', true);
-          rdkShellApisInstance.moveToFront(GLOBALS.selfClientName).then(() => {
-            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-            console.log('App: ResidentApp moveToFront Success');
-            rdkShellApisInstance.setFocus(GLOBALS.selfClientName).then(() => {
-              console.log("App: residentApp setFocus Success");
-            }).catch(err => {
-              console.log("App: Error", err);
-              Metrics$3.error(Metrics$3.ErrorType.OTHER, 'APPError', "RDKShell setFocus error" + err, false, null);
-            });
-          });
+          this._moveApptoFront(GLOBALS.selfClientName, true);
         } else {
           if (Router.getActiveHash() === "dtvplayer") {
             Router.focusWidget('TvOverlays');
@@ -65404,16 +65386,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           } else {
             Router.navigate("tv-overlay/settings", false);
           }
-          rdkShellApisInstance.moveToFront(GLOBALS.selfClientName).then(() => {
-            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-            console.log('App: ResidentApp moveToFront Success');
-            rdkShellApisInstance.setFocus(GLOBALS.selfClientName).then(() => {
-              console.log("App: Resident App setFocus Success");
-            }).catch(err => {
-              console.log("App: Error", err);
-              Metrics$3.error(Metrics$3.ErrorType.OTHER, 'AppError', "RDKShell setFocus error" + err, false, null);
-            });
-          });
+          this._moveApptoFront(GLOBALS.selfClientName, true);
         } else {
           if (Router.getActiveHash() === "dtvplayer") {
             Router.focusWidget('TvOverlays');
@@ -65422,7 +65395,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }
         return true;
       } else if (key.keyCode == keyMap.Settings_Shortcut && !Router.isNavigating()) {
-        console.log("settings shortcut");
         if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
           //launch settings overlay/page depending on the current route.
           if (Router.getActiveHash() === "player" || Router.getActiveHash() === "dtvplayer" || Router.getActiveHash() === "usb/player") {
@@ -65445,22 +65417,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") {
               //currently focused on settings overlay, so hide it
               Router.focusPage();
-              let currentApp = GLOBALS.topmostApp;
-              rdkShellApisInstance.moveToFront(currentApp);
-              rdkShellApisInstance.setFocus(currentApp);
-              rdkShellApisInstance.setVisibility(currentApp, true);
+              this._moveApptoFront(GLOBALS.topmostApp, true);
             } else {
               //launch the settings overlay
-              rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-              rdkShellApisInstance.setFocus(GLOBALS.selfClientName);
-              rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+              this._moveApptoFront(GLOBALS.selfClientName, true);
               Router.focusWidget('SettingsOverlay');
             }
           } else {
             //if on some other route while on an application, route to applauncher before launching the settings overlay
-            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-            rdkShellApisInstance.setFocus(GLOBALS.selfClientName);
-            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+            this._moveApptoFront(GLOBALS.selfClientName, true);
             Router.navigate("applauncher");
             Router.focusWidget('SettingsOverlay');
           }
@@ -65470,32 +65435,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         this.jumpToRoute("epg"); //method to exit the current app(if any) and route to home screen
         return true;
       } else if (key.keyCode == keyMap.Amazon && !Router.isNavigating()) {
-        let params = {
-          launchLocation: "dedicatedButton",
-          appIdentifier: self.appIdentifiers["Amazon"]
-        };
-        appApi.launchApp("Amazon", params).catch(err => {
-          console.error("Error in launching Amazon via dedicated key: " + JSON.stringify(err));
-        });
-        return true;
+        return this.launchFeaturedApp("Amazon");
       } else if (key.keyCode == keyMap.Youtube && !Router.isNavigating()) {
-        let params = {
-          launchLocation: "dedicatedButton",
-          appIdentifier: self.appIdentifiers["YouTube"]
-        };
-        appApi.launchApp("YouTube", params).catch(err => {
-          console.error("Error in launching Youtube via dedicated key: " + JSON.stringify(err));
-        });
+        this.launchFeaturedApp("YouTube");
         return true;
       } else if (key.keyCode == keyMap.Netflix && !Router.isNavigating()) {
         //launchLocation mapping is in launchApp method in AppApi.js
-        let params = {
-          launchLocation: "dedicatedButton",
-          appIdentifier: self.appIdentifiers["Netflix"]
-        };
-        appApi.launchApp("Netflix", params).catch(err => {
-          console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err));
-        });
+        this.launchFeaturedApp("Netflix");
         return true;
       } else if (key.keyCode == keyMap.AppCarousel && !Router.isNavigating()) {
         if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
@@ -65516,21 +65462,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "AppCarousel") {
               //currently focused on settings overlay, so hide it
               Router.focusPage();
-              rdkShellApisInstance.moveToFront(GLOBALS.topmostApp);
-              rdkShellApisInstance.setFocus(GLOBALS.topmostApp);
-              rdkShellApisInstance.setVisibility(GLOBALS.topmostApp, true);
+              this._moveApptoFront(GLOBALS.topmostApp, true);
             } else {
               //launch the settings overlay
-              rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-              rdkShellApisInstance.setFocus(GLOBALS.selfClientName);
-              rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+              this._moveApptoFront(GLOBALS.selfClientName, true);
               Router.focusWidget('AppCarousel');
             }
           } else {
             //if on some other route while on an application, route to applauncher before launching the settings overlay
-            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-            rdkShellApisInstance.setFocus(GLOBALS.selfClientName);
-            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+            this._moveApptoFront(GLOBALS.selfClientName, true);
             Router.navigate("applauncher");
             Router.focusWidget('AppCarousel');
           }
@@ -65538,29 +65478,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         return true;
       } else if (key.keyCode == keyMap.Power) {
         // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
-        appApi.getPowerState().then(res => {
-          console.log("getPowerState: ", res);
-          if (res.success) {
-            if (res.powerState === "ON") {
-              console.log("current powerState is ON so setting power state to LIGHT_SLEEP/DEEP_SLEEP depending of preferred option");
-              appApi.getPreferredStandbyMode().then(res => {
-                console.log("getPreferredStandbyMode: ", res.preferredStandbyMode);
-                appApi.setPowerState(res.preferredStandbyMode).then(result => {
-                  if (result.success) {
-                    console.log("successfully set powerstate to: " + res.preferredStandbyMode);
-                  }
-                });
-              });
-            } else {
-              console.log("current powerState is " + res.powerState + " so setting power state to ON");
-              appApi.setPowerState("ON").then(res => {
-                if (res.success) {
-                  console.log("successfully set powerstate to: ON");
-                }
-              });
-            }
-          }
-        });
+        return this._powerKeyPressed();
       } else if (key.keyCode == 228) {
         console.log("___________DEEP_SLEEP_______________________F12");
         appApi.setPowerState("DEEP_SLEEP").then(() => {
@@ -65633,7 +65551,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         console.log(new Date().toISOString() + "AvDecoderStatusNotification: ", JSON.stringify(notification));
       });
     }
-    async userInactivity() {
+    userInactivity() {
       PersistentStoreApi.get().activate().then(() => {
         PersistentStoreApi.get().getValue('ScreenSaverTime', 'timerValue').then(result => {
           // check if result has value property and if it is not undefined^M
@@ -65703,29 +65621,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         console.error("App _init keyIntercept err:", JSON.stringify(err));
       });
       this.userInactivity();
-      FireBoltApi.get().deviceinfo.gettype();
-      FireBoltApi.get().lifecycle.ready();
-      FireBoltApi.get().lifecycle.registerEvent('foreground', value => {
-        console.log("FireBoltApi[foreground] value:" + JSON.stringify(value) + ", launchResidentApp with:" + JSON.stringify(GLOBALS.selfClientName));
-        // Ripple launches refui with this rdkshell client name.
-        GLOBALS.topmostApp = GLOBALS.selfClientName;
-        FireBoltApi.get().discovery.launch("refui", {
-          "action": "home",
-          "context": {
-            "source": "device"
-          }
-        }).then(() => {
-          AlexaApi.get().reportApplicationState("menu", true);
-        });
-      });
-      FireBoltApi.get().lifecycle.registerEvent('background', value => {
-        // Ripple changed app states; it will be a 'FireboltApp'
-        GLOBALS.topmostApp = "FireboltApp";
-        console.log("FireBoltApi[foreground] value:" + JSON.stringify(value) + ", Updating top app as:" + GLOBALS.topmostApp);
-      });
-      FireBoltApi.get().lifecycle.state().then(res => {
-        console.log("Lifecycle.state result:" + res);
-      });
+      this._registerFireboltListeners();
       Keyboard$1.provide('xrn:firebolt:capability:input:keyboard', new KeyboardUIProvider(this));
       console.log("Keyboard provider registered");
       PinChallenge.provide('xrn:firebolt:capability:usergrant:pinchallenge', new PinChallengeProvider(this));
@@ -65872,6 +65768,135 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           this.SubscribeToHdmiCecSourcevent(noti.data.state, self.appIdentifiers);
         }
       });
+      this._subscribeToRDKShellNotifications();
+      appApi.getPluginStatus("Cobalt").then(() => {
+        /* Loop through YouTube variants and set respective urls. */
+        JSON.parse(JSON.stringify(appListInfo)).forEach(appInfo => {
+          if (Object.prototype.hasOwnProperty.call(appInfo, "applicationType") && appInfo.applicationType.startsWith("YouTube") && Object.prototype.hasOwnProperty.call(appInfo, "uri") && appInfo.uri.length) {
+            thunder.Controller.clone({
+              callsign: "Cobalt",
+              newcallsign: appInfo.applicationType
+            }).then(result => {
+              console.log("App Controller.clone Cobalt as " + appInfo.applicationType + " done.", result);
+            }).catch(err => {
+              console.error("App Controller clone Cobalt for " + appInfo.applicationType + " failed: ", err);
+              Metrics$3.error(Metrics$3.ErrorType.OTHER, "PluginError", "Controller clone Cobalt for ".concat(appInfo.applicationType, " failed: ").concat(err), false, null);
+              // TODO: hide YouTube Icon and listing from Menu, AppCarousel, Channel overlay and EPG page.
+            });
+            appApi.getPluginStatus(appInfo.applicationType).then(res => {
+              if (res[0].state !== "deactivated") {
+                thunder.Controller.deactivate({
+                  callsign: appInfo.applicationType
+                }).catch(err => {
+                  console.error("App Controller.deactivate " + appInfo.applicationType + " failed. It may not work.", err);
+                  Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.deactivate failed for ".concat(appInfo.applicationType, " with ").concat(err), false, null);
+                });
+              }
+              /* Do not change YouTube's configuration as Page-visibility test runs on that. */
+              if (res[0].callsign !== "YouTube") {
+                thunder.call('Controller', "configuration@".concat(appInfo.applicationType)).then(result => {
+                  /* Ensure appending '?' so that later params can be directly appended. */
+                  result.url = appInfo.uri + "?"; // Make sure that appListInfo.js has only base url.
+                  thunder.call('Controller', "configuration@".concat(appInfo.applicationType), result).then(() => {
+                    Storage$1.set(appInfo.applicationType + "DefaultURL", appInfo.uri + "?"); // Make sure that appListInfo.js has only base url.
+                  }).catch(err => {
+                    console.error("App Controller.configuration@" + appInfo.applicationType + " set failed. It may not work." + JSON.stringify(err));
+                    Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.configuration for ".concat(appInfo.applicationType, " set failed. It may not work. ").concat(JSON.stringify(err)), false, null);
+                  });
+                }).catch(err => {
+                  console.error("App Controller.configuration@" + appInfo.applicationType + " get failed. It may not work." + JSON.stringify(err));
+                  Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.configuration@ for ".concat(appInfo.applicationType, " failed with ").concat(JSON.stringify(err)), false, null);
+                });
+              } else {
+                /* Just store the plugin configured url as default url and ensure '?' is appended. */
+                Storage$1.set(appInfo.applicationType + "DefaultURL", res[0].configuration.url.includes('?') ? res[0].configuration.url : res[0].configuration.url + "?");
+              }
+            }).catch(err => {
+              console.error("App getPluginStatus " + appInfo.applicationType + " Error: " + JSON.stringify(err));
+            });
+          }
+        });
+      }).catch(err => {
+        console.error("App getPluginStatus Cobalt error: ", err);
+      });
+      //video info change events begin here---------------------
+      /********************   RDKUI-341 CHANGES - DEEP SLEEP/LIGHT SLEEP **************************/
+      this._subscribeToControlNotifications();
+      let cachedPowerState = Storage$1.get('SLEEPING');
+      console.log('cached power state', cachedPowerState);
+      console.log(typeof cachedPowerState);
+      if (cachedPowerState) {
+        appApi.getWakeupReason().then(result => {
+          if (result.result.wakeupReason !== 'WAKEUP_REASON_UNKNOWN') {
+            cachedPowerState = 'ON';
+          }
+        });
+        appApi.setPowerState(cachedPowerState).then(result => {
+          if (result.success) {
+            console.log("successfully set powerstate to: " + cachedPowerState);
+          }
+        });
+      }
+
+      /********************   RDKUI-303 - PAGE VISIBILITY API **************************/
+
+      //ACTIVATING HDMI CEC PLUGIN
+      appApi.getPluginStatus('org.rdk.HdmiCecSource').then(result => {
+        if (result[0].state === "activated") {
+          this.SubscribeToHdmiCecSourcevent(result[0].state, self.appIdentifiers);
+          let getfriendlyname, getosdname;
+          setTimeout(() => {
+            xcastApi.getFriendlyName().then(res => {
+              getfriendlyname = res.friendlyname;
+              console.log("XcastApi getFriendlyName :" + getfriendlyname);
+            }).catch(err => {
+              console.error('XcastApi getFriendlyName Error: ', err);
+            });
+            cecApi.getOSDName().then(result => {
+              getosdname = result.name;
+              console.log("CECApi getOSDName :" + getosdname);
+              if (getfriendlyname !== getosdname) {
+                cecApi.setOSDName(getfriendlyname);
+              }
+            }).catch(err => {
+              console.error('CECApi getOSDName Error :', err);
+            });
+          }, 5000);
+          cecApi.getActiveSourceStatus().then(res => {
+            Storage$1.set("UICacheCECActiveSourceStatus", res);
+            console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
+          });
+        } else {
+          cecApi.activate().then(() => {
+            let getfriendlyname, getosdname;
+            setTimeout(() => {
+              xcastApi.getFriendlyName().then(res => {
+                getfriendlyname = res.friendlyname;
+                console.log("XcastApi getFriendlyName :" + getfriendlyname);
+              }).catch(err => {
+                console.error('XcastApi getFriendlyName Error: ', err);
+              });
+              cecApi.getOSDName().then(result => {
+                getosdname = result.name;
+                console.log("CECApi getOSDName :" + getosdname);
+                if (getfriendlyname !== getosdname) {
+                  cecApi.setOSDName(getfriendlyname);
+                }
+              }).catch(err => {
+                console.error('CECApi getOSDName Error :', err);
+              });
+            }, 5000);
+            cecApi.getActiveSourceStatus().then(res => {
+              Storage$1.set("UICacheCECActiveSourceStatus", res);
+              console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
+            });
+          }).catch(err => console.log(err));
+        }
+      });
+      this._subscribeToIOPortNotifications();
+      this._updateLanguageToDefault();
+    }
+    _subscribeToRDKShellNotifications() {
       thunder.on('org.rdk.RDKShell', 'onApplicationActivated', data => {
         console.warn("[RDKSHELLEVT] onApplicationActivated:", data);
       });
@@ -65967,58 +65992,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       thunder.on('org.rdk.RDKShell', 'onFocus', data => {
         console.warn("[RDKSHELLEVT] onFocus:", data);
       });
-      appApi.getPluginStatus("Cobalt").then(() => {
-        /* Loop through YouTube variants and set respective urls. */
-        JSON.parse(JSON.stringify(appListInfo)).forEach(appInfo => {
-          if (Object.prototype.hasOwnProperty.call(appInfo, "applicationType") && appInfo.applicationType.startsWith("YouTube") && Object.prototype.hasOwnProperty.call(appInfo, "uri") && appInfo.uri.length) {
-            thunder.Controller.clone({
-              callsign: "Cobalt",
-              newcallsign: appInfo.applicationType
-            }).then(result => {
-              console.log("App Controller.clone Cobalt as " + appInfo.applicationType + " done.", result);
-            }).catch(err => {
-              console.error("App Controller clone Cobalt for " + appInfo.applicationType + " failed: ", err);
-              Metrics$3.error(Metrics$3.ErrorType.OTHER, "PluginError", "Controller clone Cobalt for ".concat(appInfo.applicationType, " failed: ").concat(err), false, null);
-              // TODO: hide YouTube Icon and listing from Menu, AppCarousel, Channel overlay and EPG page.
-            });
-            appApi.getPluginStatus(appInfo.applicationType).then(res => {
-              if (res[0].state !== "deactivated") {
-                thunder.Controller.deactivate({
-                  callsign: appInfo.applicationType
-                }).catch(err => {
-                  console.error("App Controller.deactivate " + appInfo.applicationType + " failed. It may not work.", err);
-                  Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.deactivate failed for ".concat(appInfo.applicationType, " with ").concat(err), false, null);
-                });
-              }
-              /* Do not change YouTube's configuration as Page-visibility test runs on that. */
-              if (res[0].callsign !== "YouTube") {
-                thunder.call('Controller', "configuration@".concat(appInfo.applicationType)).then(result => {
-                  /* Ensure appending '?' so that later params can be directly appended. */
-                  result.url = appInfo.uri + "?"; // Make sure that appListInfo.js has only base url.
-                  thunder.call('Controller', "configuration@".concat(appInfo.applicationType), result).then(() => {
-                    Storage$1.set(appInfo.applicationType + "DefaultURL", appInfo.uri + "?"); // Make sure that appListInfo.js has only base url.
-                  }).catch(err => {
-                    console.error("App Controller.configuration@" + appInfo.applicationType + " set failed. It may not work." + JSON.stringify(err));
-                    Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.configuration for ".concat(appInfo.applicationType, " set failed. It may not work. ").concat(JSON.stringify(err)), false, null);
-                  });
-                }).catch(err => {
-                  console.error("App Controller.configuration@" + appInfo.applicationType + " get failed. It may not work." + JSON.stringify(err));
-                  Metrics$3.error(Metrics$3.ErrorType.OTHER, "pluginError", "App Controller.configuration@ for ".concat(appInfo.applicationType, " failed with ").concat(JSON.stringify(err)), false, null);
-                });
-              } else {
-                /* Just store the plugin configured url as default url and ensure '?' is appended. */
-                Storage$1.set(appInfo.applicationType + "DefaultURL", res[0].configuration.url.includes('?') ? res[0].configuration.url : res[0].configuration.url + "?");
-              }
-            }).catch(err => {
-              console.error("App getPluginStatus " + appInfo.applicationType + " Error: " + JSON.stringify(err));
-            });
-          }
-        });
-      }).catch(err => {
-        console.error("App getPluginStatus Cobalt error: ", err);
-      });
-      //video info change events begin here---------------------
-
+    }
+    _subscribeToControlNotifications() {
       thunder.on('org.rdk.tv.ControlSettings.1', 'videoFormatChanged', notification => {
         console.log("videoFormatChangedNotification: ", JSON.stringify(notification));
         if (Router.getActiveWidget() == this.widgets.videoinfochange) {
@@ -66048,7 +66023,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
       thunder.on('Controller', 'statechange', notification => {
         // get plugin status
-        console.log("Controller statechange Notification : " + JSON.stringify(notification));
+        console.warn("Controller statechange Notification : " + JSON.stringify(notification));
         if (notification && (notification.callsign.startsWith("YouTube") || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
           console.log("".concat(notification.callsign, " status = ").concat(notification.state));
           console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", GLOBALS.topmostApp);
@@ -66116,83 +66091,10 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           }
         }
       });
-
-      /********************   RDKUI-341 CHANGES - DEEP SLEEP/LIGHT SLEEP **************************/
-
-      let cachedPowerState = Storage$1.get('SLEEPING');
-      console.log('cached power state', cachedPowerState);
-      console.log(typeof cachedPowerState);
-      if (cachedPowerState) {
-        appApi.getWakeupReason().then(result => {
-          if (result.result.wakeupReason !== 'WAKEUP_REASON_UNKNOWN') {
-            cachedPowerState = 'ON';
-          }
-        });
-        appApi.setPowerState(cachedPowerState).then(result => {
-          if (result.success) {
-            console.log("successfully set powerstate to: " + cachedPowerState);
-          }
-        });
-      }
-
-      /********************   RDKUI-303 - PAGE VISIBILITY API **************************/
-
-      //ACTIVATING HDMI CEC PLUGIN
-      appApi.getPluginStatus('org.rdk.HdmiCecSource').then(result => {
-        if (result[0].state === "activated") {
-          this.SubscribeToHdmiCecSourcevent(result[0].state, self.appIdentifiers);
-          let getfriendlyname, getosdname;
-          setTimeout(() => {
-            xcastApi.getFriendlyName().then(res => {
-              getfriendlyname = res.friendlyname;
-              console.log("XcastApi getFriendlyName :" + getfriendlyname);
-            }).catch(err => {
-              console.error('XcastApi getFriendlyName Error: ', err);
-            });
-            cecApi.getOSDName().then(result => {
-              getosdname = result.name;
-              console.log("CECApi getOSDName :" + getosdname);
-              if (getfriendlyname !== getosdname) {
-                cecApi.setOSDName(getfriendlyname);
-              }
-            }).catch(err => {
-              console.error('CECApi getOSDName Error :', err);
-            });
-          }, 5000);
-          cecApi.getActiveSourceStatus().then(res => {
-            Storage$1.set("UICacheCECActiveSourceStatus", res);
-            console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
-          });
-        } else {
-          cecApi.activate().then(() => {
-            let getfriendlyname, getosdname;
-            setTimeout(() => {
-              xcastApi.getFriendlyName().then(res => {
-                getfriendlyname = res.friendlyname;
-                console.log("XcastApi getFriendlyName :" + getfriendlyname);
-              }).catch(err => {
-                console.error('XcastApi getFriendlyName Error: ', err);
-              });
-              cecApi.getOSDName().then(result => {
-                getosdname = result.name;
-                console.log("CECApi getOSDName :" + getosdname);
-                if (getfriendlyname !== getosdname) {
-                  cecApi.setOSDName(getfriendlyname);
-                }
-              }).catch(err => {
-                console.error('CECApi getOSDName Error :', err);
-              });
-            }, 5000);
-            cecApi.getActiveSourceStatus().then(res => {
-              Storage$1.set("UICacheCECActiveSourceStatus", res);
-              console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
-            });
-          }).catch(err => console.log(err));
-        }
-      });
-
+    }
+    _subscribeToIOPortNotifications() {
       //UNPLUG/PLUG HDMI
-
+      let self = this;
       thunder.on("org.rdk.HdcpProfile", "onDisplayConnectionChanged", notification => {
         GLOBALS.previousapp_onActiveSourceStatusUpdated = null;
         console.log(new Date().toISOString() + " onDisplayConnectionChanged ", notification.HDCPStatus);
@@ -66246,123 +66148,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         } else {
           console.warn("App HdcpProfile onDisplayConnectionChanged discarding.");
           console.log("App HdcpProfile ResolutionChangeInProgress: " + Storage$1.get("ResolutionChangeInProgress") + " UICacheonDisplayConnectionChanged: " + Storage$1.get("UICacheonDisplayConnectionChanged"));
-        }
-      });
-
-      //CHANGING HDMI INPUT PORT
-
-      //need to verify
-      if ("ResidentApp" === GLOBALS.selfClientName) {
-        if (Language$1.get().length) {
-          appApi.setUILanguage(availableLanguageCodes[Language$1.get()]);
-          localStorage.setItem('Language', Language$1.get());
-        }
-      } else {
-        FireBoltApi.get().localization.language().then(lang => {
-          if (lang) {
-            FireBoltApi.get().localization.language(lang).then(res => console.log("language ".concat(lang, " set succesfully")));
-            localStorage.setItem('Language', lang);
-          }
-        });
-      }
-    }
-    _getPowerStateWhileReboot() {
-      appApi.getPowerState().then(res => {
-        console.log("_getPowerStateWhileReboot: Current power state while reboot ".concat(res.powerState));
-        this._powerStateWhileReboot = res.powerState;
-        this._PowerStateHandlingWhileReboot();
-      }).catch(err => {
-        console.log("_getPowerStateWhileReboot: Error in getting current power state while reboot ".concat(err));
-        this._powerStateWhileReboot = 'STANDBY';
-        this._PowerStateHandlingWhileReboot();
-      });
-    }
-    _PowerStateHandlingWhileReboot() {
-      console.log("_PowerStateHandlingWhileReboot: this._oldPowerStateWhileReboot , ".concat(this._oldPowerStateWhileReboot, " this._powerStateWhileReboot, ").concat(this._powerStateWhileReboot, " "));
-      if (this._oldPowerStateWhileReboot != this._powerStateWhileReboot) {
-        console.log("_PowerStateHandlingWhileReboot: old power state is not equal to powerstate while reboot ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
-        appApi.setPowerState(this._oldPowerStateWhileReboot).then(res => {
-          console.log("_PowerStateHandlingWhileReboot: successfully set powerstate to old powerstate ".concat(this._oldPowerStateWhileReboot));
-          if (res.success) {
-            appApi.getPowerState().then(res => {
-              GLOBALS.powerState = res.powerState;
-            });
-            console.log("_PowerStateHandlingWhileReboot: powerstate after setting to new powerstate ".concat(GLOBALS.powerState, " and "));
-          }
-        }).catch(err => {
-          console.log("_PowerStateHandlingWhileReboot: Rebooting the device as set PowerState failed due to ".concat(err));
-          appApi.reboot("setPowerState Api Failure");
-        });
-      } else {
-        console.log("_PowerStateHandlingWhileReboot: power state before reboot and curren tpowerstate is same ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
-        GLOBALS.powerState = this._powerStateWhileReboot;
-      }
-    }
-    _getPowerStatebeforeReboot() {
-      appApi.getPowerStateBeforeReboot().then(res => {
-        console.log("_getPowerStatebeforeReboot: getpowerstate before reboot ".concat(res.state));
-        this._oldPowerStateWhileReboot = res.state;
-        this._getPowerStateWhileReboot();
-      }).catch(err => {
-        console.log("_getPowerStatebeforeReboot: getPowerStateBeforeReboot error ".concat(err) + " setting powerstate to ON");
-        this._oldPowerStateWhileReboot = 'ON';
-        this._getPowerStateWhileReboot();
-      });
-    }
-    _firstEnable() {
-      thunder.on("org.rdk.System", "onSystemPowerStateChanged", notification => {
-        console.log(new Date().toISOString() + " onSystemPowerStateChanged Notification: ", notification);
-        appApi.getPowerState().then(res => {
-          GLOBALS.powerState = res.success ? res.powerState : notification.powerState;
-        }).catch(e => GLOBALS.powerState = notification.powerState);
-        if (notification.powerState !== "ON" && notification.currentPowerState === "ON") {
-          console.log("onSystemPowerStateChanged Notification: power state was changed from ON to " + notification.powerState);
-
-          //TURNING OFF THE DEVICE
-          Storage$1.set('SLEEPING', notification.powerState);
-          let currentApp = GLOBALS.topmostApp;
-          if (currentApp !== "") {
-            appApi.exitApp(currentApp); //will suspend/destroy the app depending on the setting.
-          }
-          Router.navigate('menu');
-        } else if (notification.powerState === "ON" && notification.currentPowerState !== "ON") {
-          //TURNING ON THE DEVICE
-          Storage$1.remove('SLEEPING');
-        }
-      });
-      console.log("App Calling listenToVoiceControl method to activate VoiceControl Plugin");
-      this.listenToVoiceControl();
-      // need to verify
-      if ("ResidentApp" === GLOBALS.selfClientName) {
-        if (availableLanguageCodes[Language$1.get()].length) {
-          appApi.setUILanguage(availableLanguageCodes[Language$1.get()]);
-          localStorage.setItem('Language', Language$1.get());
-        }
-      } else {
-        FireBoltApi.get().localization.language().then(lang => {
-          if (lang) {
-            FireBoltApi.get().localization.language(lang).then("language ".concat(lang, " set succesfully"));
-          }
-        });
-      }
-      /* Subscribe to Volume status events to report to Alexa. */
-      thunder.on('org.rdk.DisplaySettings', 'connectedAudioPortUpdated', notification => {
-        console.log("App got connectedAudioPortUpdated: ", notification);
-        // TODO: future -> can be used for volume adjustments ?
-      });
-      thunder.on('org.rdk.DisplaySettings', 'muteStatusChanged', notification => {
-        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
-          AlexaApi.get().reportVolumeState(undefined, notification.muted);
-        }
-      });
-      thunder.on('org.rdk.DisplaySettings', 'volumeLevelChanged', notification => {
-        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
-          AlexaApi.get().reportVolumeState(notification.volumeLevel, undefined);
-        }
-      });
-      thunder.on('org.rdk.System', 'onTimeZoneDSTChanged', notification => {
-        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
-          AlexaApi.get().updateDeviceTimeZoneInAlexa(notification.newTimeZone);
         }
       });
     }
@@ -66428,8 +66213,164 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           break;
       }
     }
+    _getPowerStateWhileReboot() {
+      appApi.getPowerState().then(res => {
+        console.log("_getPowerStateWhileReboot: Current power state while reboot ".concat(res.powerState));
+        this._powerStateWhileReboot = res.powerState;
+        this._PowerStateHandlingWhileReboot();
+      }).catch(err => {
+        console.log("_getPowerStateWhileReboot: Error in getting current power state while reboot ".concat(err));
+        this._powerStateWhileReboot = 'STANDBY';
+        this._PowerStateHandlingWhileReboot();
+      });
+    }
+    _PowerStateHandlingWhileReboot() {
+      console.log("_PowerStateHandlingWhileReboot: this._oldPowerStateWhileReboot , ".concat(this._oldPowerStateWhileReboot, " this._powerStateWhileReboot, ").concat(this._powerStateWhileReboot, " "));
+      if (this._oldPowerStateWhileReboot != this._powerStateWhileReboot) {
+        console.log("_PowerStateHandlingWhileReboot: old power state is not equal to powerstate while reboot ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+        appApi.setPowerState(this._oldPowerStateWhileReboot).then(res => {
+          console.log("_PowerStateHandlingWhileReboot: successfully set powerstate to old powerstate ".concat(this._oldPowerStateWhileReboot));
+          if (res.success) {
+            appApi.getPowerState().then(res => {
+              GLOBALS.powerState = res.powerState;
+            });
+            console.log("_PowerStateHandlingWhileReboot: powerstate after setting to new powerstate ".concat(GLOBALS.powerState, " and "));
+          }
+        }).catch(err => {
+          console.log("_PowerStateHandlingWhileReboot: Rebooting the device as set PowerState failed due to ".concat(err));
+          appApi.reboot("setPowerState Api Failure");
+        });
+      } else {
+        console.log("_PowerStateHandlingWhileReboot: power state before reboot and curren tpowerstate is same ".concat(this._oldPowerStateWhileReboot, " ").concat(this._powerStateWhileReboot));
+        GLOBALS.powerState = this._powerStateWhileReboot;
+      }
+    }
+    _getPowerStatebeforeReboot() {
+      appApi.getPowerStateBeforeReboot().then(res => {
+        console.log("_getPowerStatebeforeReboot: getpowerstate before reboot ".concat(res.state));
+        this._oldPowerStateWhileReboot = res.state;
+        this._getPowerStateWhileReboot();
+      }).catch(err => {
+        console.log("_getPowerStatebeforeReboot: getPowerStateBeforeReboot error ".concat(err) + " setting powerstate to ON");
+        this._oldPowerStateWhileReboot = 'ON';
+        this._getPowerStateWhileReboot();
+      });
+    }
+    _registerFireboltListeners() {
+      FireBoltApi.get().deviceinfo.gettype();
+      FireBoltApi.get().lifecycle.ready();
+      FireBoltApi.get().lifecycle.registerEvent('foreground', value => {
+        console.log("FireBoltApi[foreground] value:" + JSON.stringify(value) + ", launchResidentApp with:" + JSON.stringify(GLOBALS.selfClientName));
+        // Ripple launches refui with this rdkshell client name.
+        GLOBALS.topmostApp = GLOBALS.selfClientName;
+        FireBoltApi.get().discovery.launch("refui", {
+          "action": "home",
+          "context": {
+            "source": "device"
+          }
+        }).then(() => {
+          AlexaApi.get().reportApplicationState("menu", true);
+        });
+      });
+      FireBoltApi.get().lifecycle.registerEvent('background', value => {
+        // Ripple changed app states; it will be a 'FireboltApp'
+        GLOBALS.topmostApp = "FireboltApp";
+        console.log("FireBoltApi[foreground] value:" + JSON.stringify(value) + ", Updating top app as:" + GLOBALS.topmostApp);
+      });
+      FireBoltApi.get().lifecycle.state().then(res => {
+        console.log("Lifecycle.state result:" + res);
+      });
+    }
+    _firstEnable() {
+      thunder.on("org.rdk.System", "onSystemPowerStateChanged", notification => {
+        console.log(new Date().toISOString() + " onSystemPowerStateChanged Notification: ", notification);
+        appApi.getPowerState().then(res => {
+          GLOBALS.powerState = res.success ? res.powerState : notification.powerState;
+        }).catch(e => GLOBALS.powerState = notification.powerState);
+        if (notification.powerState !== "ON" && notification.currentPowerState === "ON") {
+          console.log("onSystemPowerStateChanged Notification: power state was changed from ON to " + notification.powerState);
+
+          //TURNING OFF THE DEVICE
+          Storage$1.set('SLEEPING', notification.powerState);
+          let currentApp = GLOBALS.topmostApp;
+          if (currentApp !== "") {
+            appApi.exitApp(currentApp); //will suspend/destroy the app depending on the setting.
+          }
+          Router.navigate('menu');
+        } else if (notification.powerState === "ON" && notification.currentPowerState !== "ON") {
+          //TURNING ON THE DEVICE
+          Storage$1.remove('SLEEPING');
+        }
+      });
+      console.log("App Calling listenToVoiceControl method to activate VoiceControl Plugin");
+      this.listenToVoiceControl();
+      this._updateLanguageToDefault();
+      /* Subscribe to Volume status events to report to Alexa. */
+      this._subscribeToAlexaNotifications();
+    }
+    SubscribeToHdmiCecSourcevent(state, appIdentifiers) {
+      switch (state) {
+        case "activated":
+          this.onApplicationStateChanged = thunder.on("org.rdk.HdmiCecSource", "onActiveSourceStatusUpdated", notification => {
+            console.log(new Date().toISOString() + " onActiveSourceStatusUpdated ", notification);
+            if (notification.status != Storage$1.get("UICacheCECActiveSourceStatus")) {
+              if (notification.status) {
+                let currentApp = GLOBALS.topmostApp;
+                if (GLOBALS.previousapp_onActiveSourceStatusUpdated !== null) {
+                  currentApp = GLOBALS.previousapp_onActiveSourceStatusUpdated;
+                }
+                if (currentApp === "ResidentApp") {
+                  Router.navigate(Storage$1.get("lastVisitedRoute"));
+                }
+                let launchLocation = Storage$1.get(currentApp + "LaunchLocation");
+                console.log("current app is ", currentApp);
+                let params = {
+                  launchLocation: launchLocation,
+                  appIdentifier: appIdentifiers[currentApp]
+                };
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  params["url"] = Storage$1.get(currentApp + "DefaultURL");
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    const isAppSuspendedEnabled = Settings$2.get("platform", "enableAppSuspended");
+                    const expectedState = isAppSuspendedEnabled ? ["hibernated", "suspended"] : ["deactivated"];
+                    if (expectedState.includes(result[0].state)) {
+                      appApi.launchApp(currentApp, params).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = null).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
+                  });
+                }
+              } else {
+                let currentApp = GLOBALS.topmostApp;
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    if (result[0].state !== (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
+                      appApi.exitApp(currentApp, true).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = currentApp).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
+                  });
+                }
+              }
+              Storage$1.set("UICacheCECActiveSourceStatus", notification.status);
+              console.log("App HdmiCecSource onActiveSourceStatusUpdated UICacheCECActiveSourceStatus:", Storage$1.get("UICacheCECActiveSourceStatus"));
+            } else {
+              console.warn("App HdmiCecSource onActiveSourceStatusUpdated discarding.");
+            }
+          });
+          break;
+        case "deactivated":
+          this.onApplicationStateChanged.dispose();
+          break;
+      }
+    }
     async listenToVoiceControl() {
-      let self = this;
       console.log("App listenToVoiceControl method got called, configuring VoiceControl Plugin");
       await voiceApi.activate().then(() => {
         voiceApi.voiceStatus().then(voiceStatusResp => {
@@ -66486,356 +66427,14 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         console.log("App VoiceControl check if user has denied ALEXA:" + JSON.stringify(AlexaApi.get().checkAlexaAuthStatus()));
 
         /* Handle VoiceControl Notifications */
-        voiceApi.registerEvent('onServerMessage', notification => {
-          console.log('App onServerMessage: ' + JSON.stringify(notification));
-          if (Storage$1.get("appSwitchingInProgress")) {
-            console.warn("App is appSwitchingInProgress? " + Storage$1.get("appSwitchingInProgress") + ", dropping processing the server notification.");
-            return;
-          }
-          if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
-            if (notification.xr_speech_avs.state_reporter === "authorization_req" || notification.xr_speech_avs.code) {
-              console.log("Alexa Auth URL is ", notification.xr_speech_avs.url);
-              if (!Router.isNavigating() && !AlexaApi.get().isSmartScreenActiavated() && Router.getActiveHash() === "menu") {
-                console.log("App enableSmartScreen");
-                AlexaApi.get().enableSmartScreen();
-              }
-              if (Router.getActiveHash() === "menu" && GLOBALS.topmostApp === GLOBALS.selfClientName) {
-                if (Router.getActiveHash() != "AlexaLoginScreen" && Router.getActiveHash() != "CodeScreen" && !Router.isNavigating()) {
-                  console.log("Routing to Alexa login page");
-                  Router.navigate("AlexaLoginScreen");
-                }
-              }
-              console.log("Alexa Auth OTP is ", notification.xr_speech_avs.code);
-            } else if (notification.xr_speech_avs.state_reporter === "authendication") {
-              console.log("Alexa Auth State is now at ", notification.xr_speech_avs.state);
-              if (notification.xr_speech_avs.state === "refreshed") {
-                AlexaApi.get().setAlexaAuthStatus("AlexaHandleError");
-                Router.navigate("SuccessScreen");
-              } else if (notification.xr_speech_avs.state === "uninitialized" || notification.xr_speech_avs.state === "authorizing") {
-                AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
-              } else if (notification.xr_speech_avs.state === "unrecoverable error" && GLOBALS.topmostApp === GLOBALS.selfClientName) {
-                // Could be AUTH token Timeout; refresh it.
-                if (Storage$1.get("setup") === true) {
-                  Router.navigate("FailureScreen");
-                } else {
-                  Storage$1.set("alexaOTPReset", true);
-                }
-              }
-            } else if (notification.xr_speech_avs.state_reporter === "login" && notification.xr_speech_avs.state === "User request to disable Alexa") {
-              // https://jira.rdkcentral.com/jira/browse/RDKDEV-746: SDK abstraction layer sends on SKIP button event.
-              AlexaApi.get().setAlexaAuthStatus("AlexaUserDenied");
-            }
-          }
-          if (AlexaApi.get().checkAlexaAuthStatus() === "AlexaHandleError" && (notification.xr_speech_avs.state === "CONNECTING" || notification.xr_speech_avs.state === "DISCONNECTED")) {
-            // || notification.xr_speech_avs.state === "CONNECTED"
-            this.tag("Failscreen1").alpha = 1;
-            this.tag("Widgets").visible = false;
-            this.tag("Pages").visible = false;
-            this.tag("Failscreen1").notify({
-              title: 'Alexa State',
-              msg: notification.xr_speech_avs.state
-            });
-            setTimeout(() => {
-              this.tag("Failscreen1").alpha = 0;
-              this.tag("Widgets").visible = true;
-              this.tag("Pages").visible = true;
-            }, 5000);
-          }
-          if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied" && notification.xr_speech_avs.state) {
-            if (notification.xr_speech_avs.state.guiAPL === "ACTIVATED") {
-              AlexaApi.get().displaySmartScreenOverlay();
-              rdkShellApisInstance.setFocus(GLOBALS.topmostApp === "" ? GLOBALS.selfClientName : GLOBALS.topmostApp);
-            }
-            if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio === "stopped") {
-              console.log("App current AlexaAudioplayerActive state:" + AlexaAudioplayerActive);
-              if (AlexaAudioplayerActive && notification.xr_speech_avs.state.guiManager === "DEACTIVATED" || !AlexaAudioplayerActive) {
-                AlexaAudioplayerActive = false;
-                rdkShellApisInstance.setFocus(GLOBALS.topmostApp === "" ? GLOBALS.selfClientName : GLOBALS.topmostApp);
-              }
-            }
-            if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio === "playing") {
-              AlexaApi.get().displaySmartScreenOverlay(true);
-            } else if (notification.xr_speech_avs.state.dialogUX === "listening") {
-              AlexaApi.get().displaySmartScreenOverlay();
-            } else if (notification.xr_speech_avs.state.dialogUX === "speaking") {
-              AlexaApi.get().displaySmartScreenOverlay(true);
-            }
-            if (notification.xr_speech_avs.state_reporter === "dialog") {
-              // Smartscreen playback state reports
-              if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio) {
-                AlexaApi.get().setAlexaSmartscreenAudioPlaybackState(notification.xr_speech_avs.state.audio);
-              }
-            }
-          }
-          if (notification.xr_speech_avs.directive && AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied") {
-            const header = notification.xr_speech_avs.directive.header;
-            const payload = notification.xr_speech_avs.directive.payload;
-            /////////Alexa.Launcher START
-            if (header.namespace === "Alexa.Launcher") {
-              //Alexa.launcher will handle launching a particular app(exiting might also be there)
-              if (header.name === "LaunchTarget") {
-                //Alexa payload will be to "launch" an app
-                if (AlexaLauncherKeyMap[payload.identifier]) {
-                  let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign;
-                  let appUrl = AlexaLauncherKeyMap[payload.identifier].url; //keymap url will be default, if alexa can give a url, it can be used istead
-                  let targetRoute = AlexaLauncherKeyMap[payload.identifier].route;
-                  let params = {
-                    url: appUrl,
-                    launchLocation: "alexa",
-                    appIdentifier: self.appIdentifiers[appCallsign]
-                  };
-                  // Send AVS State report: STOP request if "playing" to end the Smartscreen App instance.
-                  if (AlexaApi.get().checkAlexaSmartscreenAudioPlaybackState() == "playing") {
-                    console.log("Sending playbackstatereport to Pause:", PlaybackStateReport);
-                    AlexaApi.get().reportPlaybackState("PAUSED");
-                  }
-                  console.log("Alexa is trying to launch " + appCallsign + " using params: " + JSON.stringify(params));
-                  if (appCallsign) {
-                    //appCallsign is valid means target is an app and it needs to be launched
-                    appApi.launchApp(appCallsign, params).catch(err => {
-                      console.log("Alexa.Launcher LaunchTarget checkerrstatusAlexa", err);
-                      if (err.includes("Netflix")) {
-                        AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive, "INVALID_VALUE", "Unsupported AppID");
-                      } else {
-                        AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive);
-                      }
-                      console.error("Alexa.Launcher LaunchTarget Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
-                    });
-                  } else if (targetRoute) {
-                    console.log("Alexa.Launcher is trying to route to ", JSON.stringify(targetRoute));
-                    // exits the app if any and navigates to the specific route.
-                    Storage$1.set("appSwitchingInProgress", true);
-                    this.jumpToRoute(targetRoute);
-                    GLOBALS.topmostApp = GLOBALS.selfClientName;
-                    Storage$1.set("appSwitchingInProgress", false);
-                  }
-                } else {
-                  console.log("Alexa.Launcher is trying to launch an unsupported app : " + JSON.stringify(payload));
-                  AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive);
-                }
-              }
-            } /////////Alexa.Launcher END
-            else if (header.namespace === "Alexa.RemoteVideoPlayer") {
-              //alexa remote video player will search on youtube for now
-              console.log("Alexa.RemoteVideoPlayer: " + JSON.stringify(header));
-              if (header.name === "SearchAndDisplayResults" || header.name === "SearchAndPlay") {
-                console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: " + JSON.stringify(header));
-                /* Find if payload contains Destination App */
-                if (Object.prototype.hasOwnProperty.call(payload, "entities")) {
-                  let entityId = payload.entities.filter(obj => Object.keys(obj).some(key => Object.prototype.hasOwnProperty.call(obj[key], "ENTITY_ID")));
-                  if (entityId.length && AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID]) {
-                    /* ENTITY_ID or vsk key found; meaning Target App is there in response. */
-                    let replacedText = payload.searchText.transcribed.replace(entityId[0].value.toLowerCase(), "").trim();
-                    let appCallsign = AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID].callsign;
-                    //let appUrl = AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID].url
-                    let launchParams = {
-                      url: "",
-                      launchLocation: "alexa",
-                      appIdentifier: self.appIdentifiers[appCallsign]
-                    };
-                    if ("Netflix" === appCallsign) {
-                      launchParams.url = encodeURI(replacedText);
-                    } else if (appCallsign.startsWith("YouTube")) {
-                      launchParams.url = Storage$1.get(appCallsign + "DefaultURL") + "&va=" + (header.name === "SearchAndPlay" ? "play" : "search") + "&vq=" + encodeURI(replacedText);
-                    }
-                    console.log("Alexa.RemoteVideoPlayer: launchApp " + appCallsign + " with params " + launchParams);
-                    appApi.launchApp(appCallsign, launchParams).then(res => {
-                      console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launched successfully using alexa search: " + JSON.stringify(res));
-                    }).catch(err => {
-                      console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launch FAILED using alexa search: " + JSON.stringify(err));
-                    });
-                    replacedText = null;
-                    appCallsign = null;
-                    launchParams = null;
-                  } else if (!entityId.length && GLOBALS.topmostApp != GLOBALS.selfClientName) {
-                    /* give it to current focused app */
-                    console.warn("Alexa.RemoteVideoPlayer: " + GLOBALS.topmostApp + " is the focued app; need Voice search integration support to it.");
-                  } else if (!entityId.length && GLOBALS.topmostApp == GLOBALS.selfClientName) {
-                    /* Generic global search without a target app; redirect to Youtube as of now. */
-                    let replacedText = payload.searchText.transcribed.trim();
-                    let appCallsign = AlexaLauncherKeyMap["amzn1.alexa-ask-target.app.70045"].callsign;
-                    let launchParams = {
-                      url: "",
-                      launchLocation: "alexa",
-                      appIdentifier: self.appIdentifiers[appCallsign]
-                    };
-                    launchParams.url = Storage$1.get(appCallsign + "DefaultURL") + "&va=" + (header.name === "SearchAndPlay" ? "play" : "search") + "&vq=" + encodeURI(replacedText);
-                    console.log("Alexa.RemoteVideoPlayer: global search launchApp " + appCallsign + " with params " + launchParams);
-                    appApi.launchApp(appCallsign, launchParams).then(res => {
-                      console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launched successfully using alexa search: " + JSON.stringify(res));
-                    }).catch(err => {
-                      console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launch FAILED using alexa search: " + JSON.stringify(err));
-                    });
-                    replacedText = null;
-                    appCallsign = null;
-                    launchParams = null;
-                  } else {
-                    /* Possibly an unsupported App. */
-                    console.warn("Alexa.RemoteVideoPlayer: got ENTITY_ID " + entityId[0].externalIds.ENTITY_ID + "but no match in AlexaLauncherKeyMap.");
-                  }
-                } else {
-                  console.warn("Alexa.RemoteVideoPlayer: payload does not have entities; may not work.");
-                }
-              }
-            } else if (header.namespace === "Alexa.PlaybackController") {
-              appApi.deeplinkToApp(GLOBALS.topmostApp, header.name, "alexa", header.namespace);
-              AlexaApi.get().reportPlaybackState(header.name);
-            } else if (header.namespace === "Alexa.SeekController") {
-              if (Router.getActiveHash() === "player" || Router.getActiveHash() === "usb/player") {
-                let time = notification.xr_speech_avs.directive.payload.deltaPositionMilliseconds / 1000;
-                this.tag("AAMPVideoPlayer").voiceSeek(time);
-              } else {
-                appApi.deeplinkToApp(GLOBALS.topmostApp, payload, "alexa", header.namespace);
-              }
-            } else if (header.namespace === "AudioPlayer") {
-              if (header.name === "Play") {
-                AlexaApi.get().displaySmartScreenOverlay(true);
-                AlexaAudioplayerActive = true;
-                console.log("App AudioPlayer: Suspending the current app:'" + GLOBALS.topmostApp + "'");
-                if (GLOBALS.topmostApp != GLOBALS.selfClientName) {
-                  appApi.exitApp(GLOBALS.topmostApp);
-                }
-              }
-            } else if (header.namespace === "TemplateRuntime") {
-              if (header.name === "RenderPlayerInfo") {
-                AlexaApi.get().displaySmartScreenOverlay(true);
-                AlexaAudioplayerActive = true;
-              }
-            } else if (header.namespace === "Speaker") {
-              console.log("Speaker");
-              if (header.name === "AdjustVolume") {
-                VolumePayload.msgPayload.event.header.messageId = header.messageId;
-                appApi.getConnectedAudioPorts().then(audioport => {
-                  for (let i = 0; i < audioport.connectedAudioPorts.length && !audioport.connectedAudioPorts[i].startsWith("SPDIF"); i++) {
-                    if (Storage$1.get("deviceType") == "tv" && audioport.connectedAudioPorts[i].startsWith("SPEAKER") || Storage$1.get("deviceType") != "tv" && audioport.connectedAudioPorts[i].startsWith("HDMI")) {
-                      appApi.getVolumeLevel(audioport.connectedAudioPorts[i]).then(volres => {
-                        console.log("getVolumeLevel[" + audioport.connectedAudioPorts[i] + "] is:" + parseInt(volres.volumeLevel));
-                        if (parseInt(volres.volumeLevel) >= 0 || parseInt(volres.volumeLevel) <= 100) {
-                          VolumePayload.msgPayload.event.payload.volume = parseInt(volres.volumeLevel) + payload.volume;
-                          console.log("volumepayload", VolumePayload.msgPayload.event.payload.volume);
-                          if (VolumePayload.msgPayload.event.payload.volume < 0) {
-                            VolumePayload.msgPayload.event.payload.volume = 0;
-                          } else if (VolumePayload.msgPayload.event.payload.volume > 100) {
-                            VolumePayload.msgPayload.event.payload.volume = 100;
-                          }
-                        }
-                        appApi.setVolumeLevel(audioport.connectedAudioPorts[i], VolumePayload.msgPayload.event.payload.volume).then(() => {
-                          let volumeIncremented = parseInt(volres.volumeLevel) < VolumePayload.msgPayload.event.payload.volume ? true : false;
-                          if (volumeIncremented && VolumePayload.msgPayload.event.payload.muted) {
-                            VolumePayload.msgPayload.event.payload.muted = false;
-                          }
-                          if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
-                            this.tag("Volume").onVolumeChanged(volumeIncremented);
-                          } else {
-                            if (Router.getActiveHash() === "applauncher") {
-                              rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                              rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                              this.tag("Volume").onVolumeChanged(volumeIncremented);
-                            } else {
-                              rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                              rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                              Router.navigate("applauncher");
-                              this.tag("Volume").onVolumeChanged(volumeIncremented);
-                            }
-                          }
-                        });
-                      });
-                    }
-                  }
-                });
-              }
-              if (header.name === "SetVolume") {
-                VolumePayload.msgPayload.event.header.messageId = header.messageId;
-                VolumePayload.msgPayload.event.payload.volume = payload.volume;
-                console.log("adjust volume", VolumePayload);
-                console.log("checkvolume", VolumePayload.msgPayload.event.payload.volume);
-                if (VolumePayload.msgPayload.event.payload.volume > 100) {
-                  VolumePayload.msgPayload.event.payload.volume = 100;
-                } else if (VolumePayload.msgPayload.event.payload.volume < 0) {
-                  VolumePayload.msgPayload.event.payload.volume = 0;
-                }
-                appApi.getConnectedAudioPorts().then(audioport => {
-                  for (let i = 0; i < audioport.connectedAudioPorts.length && !audioport.connectedAudioPorts[i].startsWith("SPDIF"); i++) {
-                    if (Storage$1.get("deviceType") == "tv" && audioport.connectedAudioPorts[i].startsWith("SPEAKER") || Storage$1.get("deviceType") != "tv" && audioport.connectedAudioPorts[i].startsWith("HDMI")) {
-                      let volumeIncremented;
-                      appApi.getVolumeLevel(audioport.connectedAudioPorts[i]).then(volres => {
-                        volumeIncremented = parseInt(volres.volumeLevel) < VolumePayload.msgPayload.event.payload.volume ? true : false;
-                        if (volumeIncremented && VolumePayload.msgPayload.event.payload.muted) {
-                          VolumePayload.msgPayload.event.payload.muted = false;
-                        }
-                      });
-                      appApi.setVolumeLevel(audioport.connectedAudioPorts[i], VolumePayload.msgPayload.event.payload.volume).then(() => {
-                        if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
-                          this.tag("Volume").onVolumeChanged(volumeIncremented);
-                        } else {
-                          if (Router.getActiveHash() === "applauncher") {
-                            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                            this.tag("Volume").onVolumeChanged(volumeIncremented);
-                          } else {
-                            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                            Router.navigate("applauncher");
-                            this.tag("Volume").onVolumeChanged(volumeIncremented);
-                          }
-                        }
-                      });
-                    }
-                  }
-                });
-              }
-              if (header.name === "SetMute") {
-                VolumePayload.msgPayload.event.header.messageId = header.messageId;
-                VolumePayload.msgPayload.event.payload.volume = payload.volume;
-                VolumePayload.msgPayload.event.payload.muted = payload.mute;
-                if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
-                  this.tag("Volume").onVolumeMute(payload.mute);
-                } else {
-                  if (Router.getActiveHash() === "applauncher") {
-                    rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                    rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                    this.tag("Volume").onVolumeMute(payload.mute);
-                  } else {
-                    rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
-                    rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-                    Router.navigate("applauncher");
-                    this.tag("Volume").onVolumeMute(payload.mute);
-                  }
-                }
-              }
-            } else if (header.namespace === "ExternalMediaPlayer") {
-              appApi.deeplinkToApp(GLOBALS.topmostApp, payload, "alexa", header.namespace);
-            }
-          }
-          if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied" && notification.xr_speech_avs.deviceSettings) {
-            let updatedLanguage = availableLanguageCodes[Language$1.get()];
-            if (notification.xr_speech_avs.deviceSettings.currentLocale.toString() != updatedLanguage) {
-              /* Get Alexa matching Locale String */
-              for (let i = 0; i < notification.xr_speech_avs.deviceSettings.supportedLocales.length; i++) {
-                if (updatedLanguage === notification.xr_speech_avs.deviceSettings.supportedLocales[i].toString()) {
-                  AlexaApi.get().updateDeviceLanguageInAlexa(updatedLanguage);
-                }
-              }
-            }
-          }
-        });
-        voiceApi.registerEvent('onSessionBegin', () => {
-          this.$hideImage(0);
-        });
-        voiceApi.registerEvent('onSessionEnd', notification => {
-          if (notification.result === "success" && notification.success.transcription === "User request to disable Alexa") {
-            console.warn("App VoiceControl.onSessionEnd got disable Alexa.");
-            AlexaApi.get().resetAVSCredentials(); // To avoid Audio Feedback
-            AlexaApi.get().setAlexaAuthStatus("AlexaUserDenied"); // Reset back to disabled as resetAVSCredentials() sets to ErrorHandling.
-          }
-        });
+        this._registerVoiceApiEvents();
       }).catch(err => {
         console.error("App VoiceControl Plugin activation error:", err);
       });
     }
     updateAlexaTimeZone(updatedTimeZone) {
       if (updatedTimeZone.length) {
-        console.log("App updateDeviceTimeZoneInAlexa with zone:", updatedTimeZone);
+        console.log("App: updateDeviceTimeZoneInAlexa with zone:", updatedTimeZone);
         AlexaApi.get().updateDeviceTimeZoneInAlexa(updatedTimeZone);
       } else {
         console.error("App getTimezoneDST returned:", updatedTimeZone);
@@ -66881,9 +66480,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         case "Netflix":
           appApi.suspendPremiumApp("Netflix").then(res => {
             Router.navigate(Storage$1.get("lastVisitedRoute"));
-            rdkShellApisInstance.setFocus(GLOBALS.selfClientName);
-            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
-            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+            this._moveApptoFront(GLOBALS.selfClientName, true);
             if (res) {
               let params = {
                 applicationName: "NetflixApp",
@@ -66959,14 +66556,72 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
       });
     }
-
+    _powerKeyPressed() {
+      appApi.getPowerState().then(res => {
+        console.log("getPowerState: ", res);
+        if (res.success) {
+          if (res.powerState === "ON") {
+            console.log("current powerState is ON so setting power state to LIGHT_SLEEP/DEEP_SLEEP depending of preferred option");
+            appApi.getPreferredStandbyMode().then(res => {
+              console.log("getPreferredStandbyMode: ", res.preferredStandbyMode);
+              appApi.setPowerState(res.preferredStandbyMode).then(result => {
+                if (result.success) {
+                  console.log("successfully set powerstate to: " + res.preferredStandbyMode);
+                  return result.success;
+                }
+              });
+            });
+          } else {
+            console.log("current powerState is " + res.powerState + " so setting power state to ON");
+            appApi.setPowerState("ON").then(res => {
+              if (res.success) {
+                console.log("successfully set powerstate to: ON");
+                return res.success;
+              }
+            });
+          }
+        }
+      });
+    }
+    _updateLanguageToDefault() {
+      if ("ResidentApp" === GLOBALS.selfClientName) {
+        if (availableLanguageCodes[Language$1.get()].length) {
+          appApi.setUILanguage(availableLanguageCodes[Language$1.get()]);
+          localStorage.setItem('Language', Language$1.get());
+        }
+      } else {
+        FireBoltApi.get().localization.language().then(lang => {
+          if (lang) {
+            FireBoltApi.get().localization.language(lang).then("language ".concat(lang, " set succesfully"));
+            localStorage.setItem('Language', lang);
+          }
+        });
+      }
+    }
+    _moveApptoFront(appName, visibility) {
+      rdkShellApisInstance.moveToFront(appName).then(() => {
+        rdkShellApisInstance.setVisibility(appName, visibility);
+        rdkShellApisInstance.setFocus(appName).then(() => {}).catch(err => {
+          console.log("Error : can't set focus to the ".concat(appName), err);
+          Metrics$3.error(Metrics$3.ErrorType.OTHER, 'APPError', "RDKShell setFocus error" + err, false, null);
+        });
+      });
+    }
     /**
      * Function to register event listeners for Xcast plugin.
      */
     registerXcastListeners() {
       let self = this;
       this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
+        //power check
         console.log('App onApplicationLaunchRequest: ' + JSON.stringify(notification));
+        appApi.getPowerState().then(res => {
+          if (res.powerState === 'STANDBY') {
+            appApi.getPreferredStandbyMode().then(result => {
+              if (result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON');
+            });
+          }
+        });
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -67005,6 +66660,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
       this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
         console.log('App onApplicationResumeRequest: ' + JSON.stringify(notification));
+        appApi.getPowerState().then(res => {
+          if (res.powerState === 'STANDBY') {
+            appApi.getPreferredStandbyMode().then(result => {
+              if (result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON');
+            });
+          }
+        });
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -67187,6 +66849,374 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           console.error('error while enabling inactivity reporting' + JSON.stringify(err));
         });
       }
+    }
+    _subscribeToAlexaNotifications() {
+      thunder.on('org.rdk.DisplaySettings', 'connectedAudioPortUpdated', notification => {
+        console.log("App got connectedAudioPortUpdated: ", notification);
+        // TODO: future -> can be used for volume adjustments ?
+      });
+      thunder.on('org.rdk.DisplaySettings', 'muteStatusChanged', notification => {
+        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
+          AlexaApi.get().reportVolumeState(undefined, notification.muted);
+        }
+      });
+      thunder.on('org.rdk.DisplaySettings', 'volumeLevelChanged', notification => {
+        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
+          AlexaApi.get().reportVolumeState(notification.volumeLevel, undefined);
+        }
+      });
+      thunder.on('org.rdk.System', 'onTimeZoneDSTChanged', notification => {
+        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
+          AlexaApi.get().updateDeviceTimeZoneInAlexa(notification.newTimeZone);
+        }
+      });
+    }
+    _registerVoiceApiEvents() {
+      let self = this;
+      voiceApi.registerEvent('onServerMessage', notification => {
+        console.log('App onServerMessage: ' + JSON.stringify(notification));
+        if (Storage$1.get("appSwitchingInProgress")) {
+          console.warn("App is appSwitchingInProgress? " + Storage$1.get("appSwitchingInProgress") + ", dropping processing the server notification.");
+          return;
+        }
+        if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
+          if (notification.xr_speech_avs.state_reporter === "authorization_req" || notification.xr_speech_avs.code) {
+            console.log("Alexa Auth URL is ", notification.xr_speech_avs.url);
+            if (!Router.isNavigating() && !AlexaApi.get().isSmartScreenActiavated() && Router.getActiveHash() === "menu") {
+              console.log("App enableSmartScreen");
+              AlexaApi.get().enableSmartScreen();
+            }
+            if (Router.getActiveHash() === "menu" && GLOBALS.topmostApp === GLOBALS.selfClientName) {
+              if (Router.getActiveHash() != "AlexaLoginScreen" && Router.getActiveHash() != "CodeScreen" && !Router.isNavigating()) {
+                console.log("Routing to Alexa login page");
+                Router.navigate("AlexaLoginScreen");
+              }
+            }
+            console.log("Alexa Auth OTP is ", notification.xr_speech_avs.code);
+          } else if (notification.xr_speech_avs.state_reporter === "authendication") {
+            console.log("Alexa Auth State is now at ", notification.xr_speech_avs.state);
+            if (notification.xr_speech_avs.state === "refreshed") {
+              AlexaApi.get().setAlexaAuthStatus("AlexaHandleError");
+              Router.navigate("SuccessScreen");
+            } else if (notification.xr_speech_avs.state === "uninitialized" || notification.xr_speech_avs.state === "authorizing") {
+              AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
+            } else if (notification.xr_speech_avs.state === "unrecoverable error" && GLOBALS.topmostApp === GLOBALS.selfClientName) {
+              // Could be AUTH token Timeout; refresh it.
+              if (Storage$1.get("setup") === true) {
+                Router.navigate("FailureScreen");
+              } else {
+                Storage$1.set("alexaOTPReset", true);
+              }
+            }
+          } else if (notification.xr_speech_avs.state_reporter === "login" && notification.xr_speech_avs.state === "User request to disable Alexa") {
+            // https://jira.rdkcentral.com/jira/browse/RDKDEV-746: SDK abstraction layer sends on SKIP button event.
+            AlexaApi.get().setAlexaAuthStatus("AlexaUserDenied");
+          }
+        }
+        if (AlexaApi.get().checkAlexaAuthStatus() === "AlexaHandleError" && (notification.xr_speech_avs.state === "CONNECTING" || notification.xr_speech_avs.state === "DISCONNECTED")) {
+          // || notification.xr_speech_avs.state === "CONNECTED"
+          this._handleAlexaError(1);
+          this.tag("Failscreen1").notify({
+            title: 'Alexa State',
+            msg: notification.xr_speech_avs.state
+          });
+          setTimeout(() => {
+            this._handleAlexaError(0);
+          }, 5000);
+        }
+        if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied" && notification.xr_speech_avs.state) {
+          if (notification.xr_speech_avs.state.guiAPL === "ACTIVATED") {
+            AlexaApi.get().displaySmartScreenOverlay();
+            rdkShellApisInstance.setFocus(GLOBALS.topmostApp === "" ? GLOBALS.selfClientName : GLOBALS.topmostApp);
+          }
+          if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio === "stopped") {
+            console.log("App current AlexaAudioplayerActive state:" + AlexaAudioplayerActive);
+            if (AlexaAudioplayerActive && notification.xr_speech_avs.state.guiManager === "DEACTIVATED" || !AlexaAudioplayerActive) {
+              AlexaAudioplayerActive = false;
+              rdkShellApisInstance.setFocus(GLOBALS.topmostApp === "" ? GLOBALS.selfClientName : GLOBALS.topmostApp);
+            }
+          }
+          if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio === "playing") {
+            AlexaApi.get().displaySmartScreenOverlay(true);
+          } else if (notification.xr_speech_avs.state.dialogUX === "listening") {
+            AlexaApi.get().displaySmartScreenOverlay();
+          } else if (notification.xr_speech_avs.state.dialogUX === "speaking") {
+            AlexaApi.get().displaySmartScreenOverlay(true);
+          }
+          if (notification.xr_speech_avs.state_reporter === "dialog") {
+            // Smartscreen playback state reports
+            if (notification.xr_speech_avs.state.dialogUX === "idle" && notification.xr_speech_avs.state.audio) {
+              AlexaApi.get().setAlexaSmartscreenAudioPlaybackState(notification.xr_speech_avs.state.audio);
+            }
+          }
+        }
+        if (notification.xr_speech_avs.directive && AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied") {
+          const header = notification.xr_speech_avs.directive.header;
+          const payload = notification.xr_speech_avs.directive.payload;
+          /////////Alexa.Launcher START
+          if (header.namespace === "Alexa.Launcher") {
+            //Alexa.launcher will handle launching a particular app(exiting might also be there)
+            if (header.name === "LaunchTarget") {
+              //Alexa payload will be to "launch" an app
+              if (AlexaLauncherKeyMap[payload.identifier]) {
+                let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign;
+                let appUrl = AlexaLauncherKeyMap[payload.identifier].url; //keymap url will be default, if alexa can give a url, it can be used istead
+                let targetRoute = AlexaLauncherKeyMap[payload.identifier].route;
+                let params = {
+                  url: appUrl,
+                  launchLocation: "alexa",
+                  appIdentifier: self.appIdentifiers[appCallsign]
+                };
+                // Send AVS State report: STOP request if "playing" to end the Smartscreen App instance.
+                if (AlexaApi.get().checkAlexaSmartscreenAudioPlaybackState() == "playing") {
+                  console.log("Sending playbackstatereport to Pause:", PlaybackStateReport);
+                  AlexaApi.get().reportPlaybackState("PAUSED");
+                }
+                console.log("Alexa is trying to launch " + appCallsign + " using params: " + JSON.stringify(params));
+                if (appCallsign) {
+                  //appCallsign is valid means target is an app and it needs to be launched
+                  appApi.launchApp(appCallsign, params).catch(err => {
+                    console.log("Alexa.Launcher LaunchTarget checkerrstatusAlexa", err);
+                    if (err.includes("Netflix")) {
+                      AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive, "INVALID_VALUE", "Unsupported AppID");
+                    } else {
+                      AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive);
+                    }
+                    console.error("Alexa.Launcher LaunchTarget Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
+                  });
+                } else if (targetRoute) {
+                  console.log("Alexa.Launcher is trying to route to ", JSON.stringify(targetRoute));
+                  // exits the app if any and navigates to the specific route.
+                  Storage$1.set("appSwitchingInProgress", true);
+                  this.jumpToRoute(targetRoute);
+                  GLOBALS.topmostApp = GLOBALS.selfClientName;
+                  Storage$1.set("appSwitchingInProgress", false);
+                }
+              } else {
+                console.log("Alexa.Launcher is trying to launch an unsupported app : " + JSON.stringify(payload));
+                AlexaApi.get().reportErrorState(notification.xr_speech_avs.directive);
+              }
+            }
+          } /////////Alexa.Launcher END
+          else if (header.namespace === "Alexa.RemoteVideoPlayer") {
+            //alexa remote video player will search on youtube for now
+            console.log("Alexa.RemoteVideoPlayer: " + JSON.stringify(header));
+            if (header.name === "SearchAndDisplayResults" || header.name === "SearchAndPlay") {
+              console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: " + JSON.stringify(header));
+              /* Find if payload contains Destination App */
+              if (Object.prototype.hasOwnProperty.call(payload, "entities")) {
+                let entityId = payload.entities.filter(obj => Object.keys(obj).some(key => Object.prototype.hasOwnProperty.call(obj[key], "ENTITY_ID")));
+                if (entityId.length && AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID]) {
+                  /* ENTITY_ID or vsk key found; meaning Target App is there in response. */
+                  let replacedText = payload.searchText.transcribed.replace(entityId[0].value.toLowerCase(), "").trim();
+                  let appCallsign = AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID].callsign;
+                  //let appUrl = AlexaLauncherKeyMap[entityId[0].externalIds.ENTITY_ID].url
+                  let launchParams = {
+                    url: "",
+                    launchLocation: "alexa",
+                    appIdentifier: self.appIdentifiers[appCallsign]
+                  };
+                  if ("Netflix" === appCallsign) {
+                    launchParams.url = encodeURI(replacedText);
+                  } else if (appCallsign.startsWith("YouTube")) {
+                    launchParams.url = Storage$1.get(appCallsign + "DefaultURL") + "&va=" + (header.name === "SearchAndPlay" ? "play" : "search") + "&vq=" + encodeURI(replacedText);
+                  }
+                  console.log("Alexa.RemoteVideoPlayer: launchApp " + appCallsign + " with params " + launchParams);
+                  appApi.launchApp(appCallsign, launchParams).then(res => {
+                    console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launched successfully using alexa search: " + JSON.stringify(res));
+                  }).catch(err => {
+                    console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launch FAILED using alexa search: " + JSON.stringify(err));
+                  });
+                  replacedText = null;
+                  appCallsign = null;
+                  launchParams = null;
+                } else if (!entityId.length && GLOBALS.topmostApp != GLOBALS.selfClientName) {
+                  /* give it to current focused app */
+                  console.warn("Alexa.RemoteVideoPlayer: " + GLOBALS.topmostApp + " is the focued app; need Voice search integration support to it.");
+                } else if (!entityId.length && GLOBALS.topmostApp == GLOBALS.selfClientName) {
+                  /* Generic global search without a target app; redirect to Youtube as of now. */
+                  let replacedText = payload.searchText.transcribed.trim();
+                  let appCallsign = AlexaLauncherKeyMap["amzn1.alexa-ask-target.app.70045"].callsign;
+                  let launchParams = {
+                    url: "",
+                    launchLocation: "alexa",
+                    appIdentifier: self.appIdentifiers[appCallsign]
+                  };
+                  launchParams.url = Storage$1.get(appCallsign + "DefaultURL") + "&va=" + (header.name === "SearchAndPlay" ? "play" : "search") + "&vq=" + encodeURI(replacedText);
+                  console.log("Alexa.RemoteVideoPlayer: global search launchApp " + appCallsign + " with params " + launchParams);
+                  appApi.launchApp(appCallsign, launchParams).then(res => {
+                    console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launched successfully using alexa search: " + JSON.stringify(res));
+                  }).catch(err => {
+                    console.log("Alexa.RemoteVideoPlayer:" + appCallsign + " launch FAILED using alexa search: " + JSON.stringify(err));
+                  });
+                  replacedText = null;
+                  appCallsign = null;
+                  launchParams = null;
+                } else {
+                  /* Possibly an unsupported App. */
+                  console.warn("Alexa.RemoteVideoPlayer: got ENTITY_ID " + entityId[0].externalIds.ENTITY_ID + "but no match in AlexaLauncherKeyMap.");
+                }
+              } else {
+                console.warn("Alexa.RemoteVideoPlayer: payload does not have entities; may not work.");
+              }
+            }
+          } else if (header.namespace === "Alexa.PlaybackController") {
+            appApi.deeplinkToApp(GLOBALS.topmostApp, header.name, "alexa", header.namespace);
+            AlexaApi.get().reportPlaybackState(header.name);
+          } else if (header.namespace === "Alexa.SeekController") {
+            if (Router.getActiveHash() === "player" || Router.getActiveHash() === "usb/player") {
+              let time = notification.xr_speech_avs.directive.payload.deltaPositionMilliseconds / 1000;
+              this.tag("AAMPVideoPlayer").voiceSeek(time);
+            } else {
+              appApi.deeplinkToApp(GLOBALS.topmostApp, payload, "alexa", header.namespace);
+            }
+          } else if (header.namespace === "AudioPlayer") {
+            if (header.name === "Play") {
+              AlexaApi.get().displaySmartScreenOverlay(true);
+              AlexaAudioplayerActive = true;
+              console.log("App AudioPlayer: Suspending the current app:'" + GLOBALS.topmostApp + "'");
+              if (GLOBALS.topmostApp != GLOBALS.selfClientName) {
+                appApi.exitApp(GLOBALS.topmostApp);
+              }
+            }
+          } else if (header.namespace === "TemplateRuntime") {
+            if (header.name === "RenderPlayerInfo") {
+              AlexaApi.get().displaySmartScreenOverlay(true);
+              AlexaAudioplayerActive = true;
+            }
+          } else if (header.namespace === "Speaker") {
+            console.log("Speaker");
+            if (header.name === "AdjustVolume") {
+              VolumePayload.msgPayload.event.header.messageId = header.messageId;
+              appApi.getConnectedAudioPorts().then(audioport => {
+                for (let i = 0; i < audioport.connectedAudioPorts.length && !audioport.connectedAudioPorts[i].startsWith("SPDIF"); i++) {
+                  if (Storage$1.get("deviceType") == "tv" && audioport.connectedAudioPorts[i].startsWith("SPEAKER") || Storage$1.get("deviceType") != "tv" && audioport.connectedAudioPorts[i].startsWith("HDMI")) {
+                    appApi.getVolumeLevel(audioport.connectedAudioPorts[i]).then(volres => {
+                      console.log("getVolumeLevel[" + audioport.connectedAudioPorts[i] + "] is:" + parseInt(volres.volumeLevel));
+                      if (parseInt(volres.volumeLevel) >= 0 || parseInt(volres.volumeLevel) <= 100) {
+                        VolumePayload.msgPayload.event.payload.volume = parseInt(volres.volumeLevel) + payload.volume;
+                        console.log("volumepayload", VolumePayload.msgPayload.event.payload.volume);
+                        if (VolumePayload.msgPayload.event.payload.volume < 0) {
+                          VolumePayload.msgPayload.event.payload.volume = 0;
+                        } else if (VolumePayload.msgPayload.event.payload.volume > 100) {
+                          VolumePayload.msgPayload.event.payload.volume = 100;
+                        }
+                      }
+                      appApi.setVolumeLevel(audioport.connectedAudioPorts[i], VolumePayload.msgPayload.event.payload.volume).then(() => {
+                        let volumeIncremented = parseInt(volres.volumeLevel) < VolumePayload.msgPayload.event.payload.volume ? true : false;
+                        if (volumeIncremented && VolumePayload.msgPayload.event.payload.muted) {
+                          VolumePayload.msgPayload.event.payload.muted = false;
+                        }
+                        if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
+                          this.tag("Volume").onVolumeChanged(volumeIncremented);
+                        } else {
+                          if (Router.getActiveHash() === "applauncher") {
+                            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                            this.tag("Volume").onVolumeChanged(volumeIncremented);
+                          } else {
+                            rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                            rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                            Router.navigate("applauncher");
+                            this.tag("Volume").onVolumeChanged(volumeIncremented);
+                          }
+                        }
+                      });
+                    });
+                  }
+                }
+              });
+            }
+            if (header.name === "SetVolume") {
+              VolumePayload.msgPayload.event.header.messageId = header.messageId;
+              VolumePayload.msgPayload.event.payload.volume = payload.volume;
+              console.log("adjust volume", VolumePayload);
+              console.log("checkvolume", VolumePayload.msgPayload.event.payload.volume);
+              if (VolumePayload.msgPayload.event.payload.volume > 100) {
+                VolumePayload.msgPayload.event.payload.volume = 100;
+              } else if (VolumePayload.msgPayload.event.payload.volume < 0) {
+                VolumePayload.msgPayload.event.payload.volume = 0;
+              }
+              appApi.getConnectedAudioPorts().then(audioport => {
+                for (let i = 0; i < audioport.connectedAudioPorts.length && !audioport.connectedAudioPorts[i].startsWith("SPDIF"); i++) {
+                  if (Storage$1.get("deviceType") == "tv" && audioport.connectedAudioPorts[i].startsWith("SPEAKER") || Storage$1.get("deviceType") != "tv" && audioport.connectedAudioPorts[i].startsWith("HDMI")) {
+                    let volumeIncremented;
+                    appApi.getVolumeLevel(audioport.connectedAudioPorts[i]).then(volres => {
+                      volumeIncremented = parseInt(volres.volumeLevel) < VolumePayload.msgPayload.event.payload.volume ? true : false;
+                      if (volumeIncremented && VolumePayload.msgPayload.event.payload.muted) {
+                        VolumePayload.msgPayload.event.payload.muted = false;
+                      }
+                    });
+                    appApi.setVolumeLevel(audioport.connectedAudioPorts[i], VolumePayload.msgPayload.event.payload.volume).then(() => {
+                      if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
+                        this.tag("Volume").onVolumeChanged(volumeIncremented);
+                      } else {
+                        if (Router.getActiveHash() === "applauncher") {
+                          rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                          rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                          this.tag("Volume").onVolumeChanged(volumeIncremented);
+                        } else {
+                          rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                          rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                          Router.navigate("applauncher");
+                          this.tag("Volume").onVolumeChanged(volumeIncremented);
+                        }
+                      }
+                    });
+                  }
+                }
+              });
+            }
+            if (header.name === "SetMute") {
+              VolumePayload.msgPayload.event.header.messageId = header.messageId;
+              VolumePayload.msgPayload.event.payload.volume = payload.volume;
+              VolumePayload.msgPayload.event.payload.muted = payload.mute;
+              if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
+                this.tag("Volume").onVolumeMute(payload.mute);
+              } else {
+                if (Router.getActiveHash() === "applauncher") {
+                  rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                  rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                  this.tag("Volume").onVolumeMute(payload.mute);
+                } else {
+                  rdkShellApisInstance.moveToFront(GLOBALS.selfClientName);
+                  rdkShellApisInstance.setVisibility(GLOBALS.selfClientName, true);
+                  Router.navigate("applauncher");
+                  this.tag("Volume").onVolumeMute(payload.mute);
+                }
+              }
+            }
+          } else if (header.namespace === "ExternalMediaPlayer") {
+            appApi.deeplinkToApp(GLOBALS.topmostApp, payload, "alexa", header.namespace);
+          }
+        }
+        if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied" && notification.xr_speech_avs.deviceSettings) {
+          let updatedLanguage = availableLanguageCodes[Language$1.get()];
+          if (notification.xr_speech_avs.deviceSettings.currentLocale.toString() != updatedLanguage) {
+            /* Get Alexa matching Locale String */
+            for (let i = 0; i < notification.xr_speech_avs.deviceSettings.supportedLocales.length; i++) {
+              if (updatedLanguage === notification.xr_speech_avs.deviceSettings.supportedLocales[i].toString()) {
+                AlexaApi.get().updateDeviceLanguageInAlexa(updatedLanguage);
+              }
+            }
+          }
+        }
+      });
+      voiceApi.registerEvent('onSessionBegin', () => {
+        this.$hideImage(0);
+      });
+      voiceApi.registerEvent('onSessionEnd', notification => {
+        if (notification.result === "success" && notification.success.transcription === "User request to disable Alexa") {
+          console.warn("App VoiceControl.onSessionEnd got disable Alexa.");
+          AlexaApi.get().resetAVSCredentials(); // To avoid Audio Feedback
+          AlexaApi.get().setAlexaAuthStatus("AlexaUserDenied"); // Reset back to disabled as resetAVSCredentials() sets to ErrorHandling.
+        }
+      });
+    }
+    _handleAlexaError(visibility) {
+      this.tag("Failscreen1").alpha = visibility;
+      this.tag("Widgets").visible = !visibility;
+      this.tag("Pages").visible = !visibility;
     }
     jumpToRoute(route) {
       if (GLOBALS.topmostApp != GLOBALS.selfClientName) {
