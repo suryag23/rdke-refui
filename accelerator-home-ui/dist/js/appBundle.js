@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Fri, 13 Dec 2024 06:25:53 GMT
+ * Generated: Mon, 23 Dec 2024 11:01:37 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -47002,7 +47002,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       await LISA.get().uninstall(param);
     } catch (error) {
       console.error('DACApi Error on LISA uninstall: ' + error.code + ' ' + error.message);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: ' + JSON.stringify(err), true, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA uninstall: ' + JSON.stringify(error), true, null);
       app.errorCode = error.code;
       return false;
     }
@@ -47014,7 +47014,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       result = await LISA.get().getList();
     } catch (error) {
       console.error('DACApi Error on LISA getList: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on LISA getList: ' + JSON.stringify(error), false, null);
     }
     return result == null ? [] : result.apps ? result.apps : [];
   };
@@ -47059,7 +47059,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       result = await thunderJS().DeviceInfo.systeminfo();
     } catch (error) {
       console.error('DAC Api Error on systeminfo: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DAC Api Error on systeminfo: ' + JSON.stringify(error), false, null);
     }
     return result == null ? "unknown" : result.devicename;
   };
@@ -47093,7 +47093,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       }
     } catch (error) {
       console.error('DACApi Error on launchApplication: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: ' + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", 'DACApi Error on launchApplication: ' + JSON.stringify(error), false, null);
       return false;
     }
     if (result == null) {
@@ -47134,7 +47134,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
     } catch (error) {
       console.log('DACApi Error on moveToFront: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError" + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder RDKShell moveToFront DACApiError" + JSON.stringify(error), false, null);
     }
     try {
       result = await thunderJS()['org.rdk.RDKShell'].setFocus({
@@ -47143,7 +47143,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       GLOBALS.topmostApp = app.id + ';' + app.version + ';' + app.type;
     } catch (error) {
       console.log('DACApi Error on setFocus: ', error);
-      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus" + JSON.stringify(err), false, null);
+      Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "Error in Thunder DACApi setFocus" + JSON.stringify(error), false, null);
       return false;
     }
     return result == null ? false : result.success;
@@ -47171,12 +47171,12 @@ preferredAudioLanguages:   preferredAudioLanguages$1
               appListArray = result["applications"];
             } else {
               console.error("DACApi result does not have applications");
-              Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null);
+              Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", "DACApi result does not have applications", false, null);
               Storage$1.set("CloudAppStore", true);
             }
           }).catch(error => {
             console.error("DACApi fetch error from local server", error);
-            Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(err), false, null);
+            Metrics$3.error(Metrics$3.ErrorType.OTHER, "DACApiError", JSON.stringify(error), false, null);
             Storage$1.set("CloudAppStore", true);
           });
         } else if (Storage$1.get("CloudAppStore") && data != null && Object.prototype.hasOwnProperty.call(data, "app-catalog-cloud")) {
@@ -47866,7 +47866,8 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           type: Progress,
           x: 50,
           y: 80,
-          w: 200
+          w: 200,
+          alpha: 1
         }
       };
     }
@@ -47921,8 +47922,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }
       }
       if (Object.prototype.hasOwnProperty.call(this._app, "errorCode")) {
+        this.tag('StatusProgress').alpha = 0;
         this.tag('Overlay.OverlayText').text.text = Language$1.translate('Error') + ':' + this._app.errorCode;
-        this.tag("OverlayText").text.text = this._app.code;
+        // this.tag("OverlayText").text.text = this._app.code;
         this.tag("Overlay").alpha = 0.7;
         this.tag("OverlayText").alpha = 1;
       }
@@ -65240,7 +65242,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       _defineProperty$1(this, "launchFeaturedApp", appName => {
         let params = {
           launchLocation: "dedicatedButton",
-          appIdentifier: appName
+          appIdentifier: this.appIdentifiers[appName]
         };
         appApi.launchApp(appName, params).catch(err => {
           console.error("Error in launching ".concat(appName, " via dedicated key: ") + JSON.stringify(err));
@@ -65353,7 +65355,6 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       return this._performKeyPressOPerations(key);
     }
     _performKeyPressOPerations(key) {
-      let self = this;
       if (key.keyCode == keyMap.Home && !Router.isNavigating()) {
         if (GLOBALS.topmostApp.includes("dac.native")) {
           this.jumpToRoute("apps");
@@ -65434,13 +65435,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         this.jumpToRoute("epg"); //method to exit the current app(if any) and route to home screen
         return true;
       } else if (key.keyCode == keyMap.Amazon && !Router.isNavigating()) {
-        return this.launchFeaturedApp(self.appIdentifiers["Amazon"]);
+        return this.launchFeaturedApp("Amazon");
       } else if (key.keyCode == keyMap.Youtube && !Router.isNavigating()) {
-        this.launchFeaturedApp(self.appIdentifiers["YouTube"]);
+        this.launchFeaturedApp("YouTube");
         return true;
       } else if (key.keyCode == keyMap.Netflix && !Router.isNavigating()) {
         //launchLocation mapping is in launchApp method in AppApi.js
-        this.launchFeaturedApp(self.appIdentifiers["Netflix"]);
+        this.launchFeaturedApp("Netflix");
         return true;
       } else if (key.keyCode == keyMap.AppCarousel && !Router.isNavigating()) {
         if (GLOBALS.topmostApp === GLOBALS.selfClientName) {
@@ -66550,7 +66551,15 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     registerXcastListeners() {
       let self = this;
       this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
+        //power check
         console.log('App onApplicationLaunchRequest: ' + JSON.stringify(notification));
+        appApi.getPowerState().then(res => {
+          if (res.powerState === 'STANDBY') {
+            appApi.getPreferredStandbyMode().then(result => {
+              if (result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON');
+            });
+          }
+        });
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -66589,6 +66598,13 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       });
       this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
         console.log('App onApplicationResumeRequest: ' + JSON.stringify(notification));
+        appApi.getPowerState().then(res => {
+          if (res.powerState === 'STANDBY') {
+            appApi.getPreferredStandbyMode().then(result => {
+              if (result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON');
+            });
+          }
+        });
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {

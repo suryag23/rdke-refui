@@ -250,14 +250,14 @@ export default class App extends Router.App {
       return true
     }
     else if (key.keyCode == Keymap.Amazon && !Router.isNavigating()) {
-      return this.launchFeaturedApp( self.appIdentifiers["Amazon"])
+      return this.launchFeaturedApp( "Amazon")
     }
     else if (key.keyCode == Keymap.Youtube && !Router.isNavigating()) {
-      this.launchFeaturedApp(self.appIdentifiers["YouTube"])
+      this.launchFeaturedApp("YouTube")
       return true
     }
     else if (key.keyCode == Keymap.Netflix && !Router.isNavigating()) { //launchLocation mapping is in launchApp method in AppApi.js
-      this.launchFeaturedApp(self.appIdentifiers["Netflix"])
+      this.launchFeaturedApp("Netflix")
       return true
     }
     else if (key.keyCode == Keymap.AppCarousel && !Router.isNavigating()) {
@@ -1400,7 +1400,7 @@ export default class App extends Router.App {
   launchFeaturedApp = (appName) =>{
     let params = {
       launchLocation: "dedicatedButton",
-      appIdentifier:appName
+      appIdentifier:this.appIdentifiers[appName]
     }
     appApi.launchApp(appName, params).catch(err => {
       console.error(`Error in launching ${appName} via dedicated key: ` + JSON.stringify(err))
@@ -1413,8 +1413,15 @@ export default class App extends Router.App {
   registerXcastListeners() {
     let self = this;
     this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
+      //power check
       console.log('App onApplicationLaunchRequest: ' + JSON.stringify(notification));
-
+      appApi.getPowerState().then(res =>{
+        if(res.powerState === 'STANDBY') {
+          appApi.getPreferredStandbyMode().then(result =>{
+              if(result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON')
+            })
+        }
+      })
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -1452,6 +1459,13 @@ export default class App extends Router.App {
 
     this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
       console.log('App onApplicationResumeRequest: ' + JSON.stringify(notification));
+      appApi.getPowerState().then(res => {
+        if(res.powerState === 'STANDBY') {
+          appApi.getPreferredStandbyMode().then(result =>{
+              if(result.preferredStandbyMode === "LIGHT_SLEEP") appApi.setPowerState('ON')
+            })
+        }
+      })
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
         let params = {

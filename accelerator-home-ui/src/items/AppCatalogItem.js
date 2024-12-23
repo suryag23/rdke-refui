@@ -67,6 +67,7 @@ export default class AppCatalogItem extends Lightning.Component {
             },
             StatusProgress: {
                 type: StatusProgress, x: 50, y: 80, w: 200,
+                alpha: 1,
             },
         }
     }
@@ -127,8 +128,9 @@ export default class AppCatalogItem extends Lightning.Component {
             }
         }
         if (Object.prototype.hasOwnProperty.call(this._app, "errorCode")) {
+            this.tag('StatusProgress').alpha = 0
             this.tag('Overlay.OverlayText').text.text = Language.translate('Error') + ':' + this._app.errorCode;
-            this.tag("OverlayText").text.text = this._app.code;
+            // this.tag("OverlayText").text.text = this._app.code;
             this.tag("Overlay").alpha = 0.7
             this.tag("OverlayText").alpha = 1
         }
