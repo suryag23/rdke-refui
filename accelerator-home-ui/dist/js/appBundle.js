@@ -10058,6 +10058,32 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     }
   }
 
+<<<<<<< HEAD
+=======
+  function _defineProperty$1(e, r, t) {
+    return (r = _toPropertyKey$1(r)) in e ? Object.defineProperty(e, r, {
+      value: t,
+      enumerable: !0,
+      configurable: !0,
+      writable: !0
+    }) : e[r] = t, e;
+  }
+  function _toPrimitive$1(t, r) {
+    if ("object" != typeof t || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != typeof i) return i;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t);
+  }
+  function _toPropertyKey$1(t) {
+    var i = _toPrimitive$1(t, "string");
+    return "symbol" == typeof i ? i : i + "";
+  }
+
+>>>>>>> develop
   class RDKShellApis {
     constructor() {
       var _this = this;
@@ -65228,6 +65254,27 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     }
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+>>>>>>> develop
   var powerState = 'ON';
   var AlexaAudioplayerActive = false;
   var thunder = thunderJS$1(CONFIG.thunderConfig);
@@ -66091,8 +66138,86 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           }
         }
       });
+<<<<<<< HEAD
     }
     _subscribeToIOPortNotifications() {
+=======
+
+      /********************   RDKUI-341 CHANGES - DEEP SLEEP/LIGHT SLEEP **************************/
+
+      let cachedPowerState = Storage$1.get('SLEEPING');
+      console.log('cached power state', cachedPowerState);
+      console.log(typeof cachedPowerState);
+      if (cachedPowerState) {
+        appApi.getWakeupReason().then(result => {
+          if (result.result.wakeupReason !== 'WAKEUP_REASON_UNKNOWN') {
+            cachedPowerState = 'ON';
+          }
+        });
+        appApi.setPowerState(cachedPowerState).then(result => {
+          if (result.success) {
+            console.log("successfully set powerstate to: " + cachedPowerState);
+          }
+        });
+      }
+
+      /********************   RDKUI-303 - PAGE VISIBILITY API **************************/
+
+      //ACTIVATING HDMI CEC PLUGIN
+      appApi.getPluginStatus('org.rdk.HdmiCecSource').then(result => {
+        if (result[0].state === "activated") {
+          this.SubscribeToHdmiCecSourcevent(result[0].state, self.appIdentifiers);
+          let getfriendlyname, getosdname;
+          setTimeout(() => {
+            xcastApi.getFriendlyName().then(res => {
+              getfriendlyname = res.friendlyname;
+              console.log("XcastApi getFriendlyName :" + getfriendlyname);
+            }).catch(err => {
+              console.error('XcastApi getFriendlyName Error: ', err);
+            });
+            cecApi.getOSDName().then(result => {
+              getosdname = result.name;
+              console.log("CECApi getOSDName :" + getosdname);
+              if (getfriendlyname !== getosdname) {
+                cecApi.setOSDName(getfriendlyname);
+              }
+            }).catch(err => {
+              console.error('CECApi getOSDName Error :', err);
+            });
+          }, 5000);
+          cecApi.getActiveSourceStatus().then(res => {
+            Storage$1.set("UICacheCECActiveSourceStatus", res);
+            console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
+          });
+        } else {
+          cecApi.activate().then(() => {
+            let getfriendlyname, getosdname;
+            setTimeout(() => {
+              xcastApi.getFriendlyName().then(res => {
+                getfriendlyname = res.friendlyname;
+                console.log("XcastApi getFriendlyName :" + getfriendlyname);
+              }).catch(err => {
+                console.error('XcastApi getFriendlyName Error: ', err);
+              });
+              cecApi.getOSDName().then(result => {
+                getosdname = result.name;
+                console.log("CECApi getOSDName :" + getosdname);
+                if (getfriendlyname !== getosdname) {
+                  cecApi.setOSDName(getfriendlyname);
+                }
+              }).catch(err => {
+                console.error('CECApi getOSDName Error :', err);
+              });
+            }, 5000);
+            cecApi.getActiveSourceStatus().then(res => {
+              Storage$1.set("UICacheCECActiveSourceStatus", res);
+              console.log("App getActiveSourceStatus: " + res + " UICacheCECActiveSourceStatus:" + Storage$1.get("UICacheCECActiveSourceStatus"));
+            });
+          }).catch(err => console.log(err));
+        }
+      });
+
+>>>>>>> develop
       //UNPLUG/PLUG HDMI
       let self = this;
       thunder.on("org.rdk.HdcpProfile", "onDisplayConnectionChanged", notification => {
@@ -66150,6 +66275,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           console.log("App HdcpProfile ResolutionChangeInProgress: " + Storage$1.get("ResolutionChangeInProgress") + " UICacheonDisplayConnectionChanged: " + Storage$1.get("UICacheonDisplayConnectionChanged"));
         }
       });
+<<<<<<< HEAD
     }
     SubscribeToHdmiCecSourcevent(state, appIdentifiers) {
       switch (state) {
@@ -66211,6 +66337,24 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         case "deactivated":
           this.onApplicationStateChanged.dispose();
           break;
+=======
+
+      //CHANGING HDMI INPUT PORT
+
+      //need to verify
+      if ("ResidentApp" === GLOBALS.selfClientName) {
+        if (Language$1.get().length) {
+          appApi.setUILanguage(availableLanguageCodes[Language$1.get()]);
+          localStorage.setItem('Language', Language$1.get());
+        }
+      } else {
+        FireBoltApi.get().localization.language().then(lang => {
+          if (lang) {
+            FireBoltApi.get().localization.language(lang).then(res => console.log("language ".concat(lang, " set succesfully")));
+            localStorage.setItem('Language', lang);
+          }
+        });
+>>>>>>> develop
       }
     }
     _getPowerStateWhileReboot() {
@@ -66307,6 +66451,68 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       this._updateLanguageToDefault();
       /* Subscribe to Volume status events to report to Alexa. */
       this._subscribeToAlexaNotifications();
+    }
+    SubscribeToHdmiCecSourcevent(state, appIdentifiers) {
+      switch (state) {
+        case "activated":
+          this.onApplicationStateChanged = thunder.on("org.rdk.HdmiCecSource", "onActiveSourceStatusUpdated", notification => {
+            console.log(new Date().toISOString() + " onActiveSourceStatusUpdated ", notification);
+            if (notification.status != Storage$1.get("UICacheCECActiveSourceStatus")) {
+              if (notification.status) {
+                let currentApp = GLOBALS.topmostApp;
+                if (GLOBALS.previousapp_onActiveSourceStatusUpdated !== null) {
+                  currentApp = GLOBALS.previousapp_onActiveSourceStatusUpdated;
+                }
+                if (currentApp === "ResidentApp") {
+                  Router.navigate(Storage$1.get("lastVisitedRoute"));
+                }
+                let launchLocation = Storage$1.get(currentApp + "LaunchLocation");
+                console.log("current app is ", currentApp);
+                let params = {
+                  launchLocation: launchLocation,
+                  appIdentifier: appIdentifiers[currentApp]
+                };
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  params["url"] = Storage$1.get(currentApp + "DefaultURL");
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    const isAppSuspendedEnabled = Settings$2.get("platform", "enableAppSuspended");
+                    const expectedState = isAppSuspendedEnabled ? ["hibernated", "suspended"] : ["deactivated"];
+                    if (expectedState.includes(result[0].state)) {
+                      appApi.launchApp(currentApp, params).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = null).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
+                  });
+                }
+              } else {
+                let currentApp = GLOBALS.topmostApp;
+                if (currentApp.startsWith("YouTube") || currentApp.startsWith("Amazon") || currentApp.startsWith("Netflix")) {
+                  appApi.getPluginStatus(currentApp).then(result => {
+                    if (result[0].state !== (Settings$2.get("platform", "enableAppSuspended") ? "suspended" : "deactivated")) {
+                      appApi.exitApp(currentApp, true).then(() => GLOBALS.previousapp_onActiveSourceStatusUpdated = currentApp).catch(err => {
+                        Router.navigate(Storage$1.get("lastVisitedRoute"));
+                        console.error("Error in launching ".concat(currentApp, " : ") + JSON.stringify(err));
+                      });
+                    } else {
+                      console.log("App HdmiCecSource onActiveSourceStatusUpdated skipping; " + currentApp + " is already:", JSON.stringify(result[0].state));
+                    }
+                  });
+                }
+              }
+              Storage$1.set("UICacheCECActiveSourceStatus", notification.status);
+              console.log("App HdmiCecSource onActiveSourceStatusUpdated UICacheCECActiveSourceStatus:", Storage$1.get("UICacheCECActiveSourceStatus"));
+            } else {
+              console.warn("App HdmiCecSource onActiveSourceStatusUpdated discarding.");
+            }
+          });
+          break;
+        case "deactivated":
+          this.onApplicationStateChanged.dispose();
+          break;
+      }
     }
     async listenToVoiceControl() {
       console.log("App listenToVoiceControl method got called, configuring VoiceControl Plugin");
@@ -66494,6 +66700,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
       });
     }
+<<<<<<< HEAD
     _powerKeyPressed() {
       appApi.getPowerState().then(res => {
         console.log("getPowerState: ", res);
@@ -66545,6 +66752,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         });
       });
     }
+=======
+
+>>>>>>> develop
     /**
      * Function to register event listeners for Xcast plugin.
      */
