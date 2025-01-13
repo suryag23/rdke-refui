@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.14.2
  * 
- * Generated: Mon, 23 Dec 2024 11:01:37 GMT
+ * Generated: Mon, 13 Jan 2025 17:46:56 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -362,12 +362,12 @@ var APP_accelerator_home_ui = (function () {
    */
 
   let timeout$1 = null;
-  var easeExecution = (cb, delay) => {
+  var easeExecution = ((cb, delay) => {
     clearTimeout(timeout$1);
     timeout$1 = setTimeout(() => {
       cb();
     }, delay);
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5066,7 +5066,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let ApplicationInstance;
-  var Launch = (App, appSettings, platformSettings, appData) => {
+  var Launch = ((App, appSettings, platformSettings, appData) => {
     initSettings$2(appSettings, platformSettings);
     initUtils(platformSettings);
     initStorage();
@@ -5085,7 +5085,7 @@ var APP_accelerator_home_ui = (function () {
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
-  };
+  });
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -6378,6 +6378,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
   const GLOBALS = {
+    _AlexaAvsstatus: false,
     _previousapp_onActiveSourceStatusUpdated: null,
     _previousapp_onDisplayConnectionChanged: null,
     _constantselfClientName: window.__firebolt && window.__firebolt.endpoint !== undefined ? "FireboltMainApp-refui" : "ResidentApp",
@@ -6409,6 +6410,12 @@ var APP_accelerator_home_ui = (function () {
     },
     get previousapp_onActiveSourceStatusUpdated() {
       return this._previousapp_onActiveSourceStatusUpdated;
+    },
+    set AlexaAvsstatus(status) {
+      this._AlexaAvsstatus = status;
+    },
+    get AlexaAvsstatus() {
+      return this._AlexaAvsstatus;
     }
   };
 
@@ -25408,9 +25415,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
    * @param {Object} theme - theme to be provided to styles
    */
-  var createStyles = (styles, theme) => {
+  var createStyles = ((styles, theme) => {
     return typeof styles === 'function' ? styles(theme) : styles;
-  };
+  });
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -33591,26 +33598,35 @@ preferredAudioLanguages:   preferredAudioLanguages$1
             //location.reload(true)
           });
           setTimeout(() => {
-            AlexaApi.get().resetAVSCredentials().then(result => {
-              console.log("Triggering AVS credential reset.", result);
-              if (result.success) {
-                AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
-                this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data') + " - " + Language$1.translate('Finished');
-                setTimeout(() => {
-                  this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data');
-                  this.tag('ClearCookies.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-                  cookieToggle = !cookieToggle;
-                }, 2000);
-              } else {
-                //UNSUCCESSFULL API CALL
-                this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data') + " - " + Language$1.translate("Error!");
-                setTimeout(() => {
-                  this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data');
-                  this.tag('ClearCookies.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-                  cookieToggle = !cookieToggle;
-                }, 2000);
-              }
-            });
+            if (GLOBALS.AlexaAvsstatus) {
+              AlexaApi.get().resetAVSCredentials().then(result => {
+                console.log("Triggering AVS credential reset.", result);
+                if (result.success) {
+                  AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
+                  this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data') + " - " + Language$1.translate('Finished');
+                  setTimeout(() => {
+                    this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data');
+                    this.tag('ClearCookies.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+                    cookieToggle = !cookieToggle;
+                  }, 2000);
+                } else {
+                  //UNSUCCESSFULL API CALL
+                  this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data') + " - " + Language$1.translate("Error!");
+                  setTimeout(() => {
+                    this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data');
+                    this.tag('ClearCookies.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+                    cookieToggle = !cookieToggle;
+                  }, 2000);
+                }
+              });
+            } else {
+              this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data') + " - " + Language$1.translate('Finished');
+              setTimeout(() => {
+                this.tag('ClearCookies.Title').text = Language$1.translate('Clear Cookies and App Data');
+                this.tag('ClearCookies.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+                cookieToggle = !cookieToggle;
+              }, 2000);
+            }
           }, 2000);
         }
       }, class PrivacyPolicy extends this {
@@ -36060,7 +36076,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
     async _performFactoryReset() {
       // Deactivate SmartScreen instance to prevent overlay when Auth is revoked.
       AlexaApi.get().disableSmartScreen();
-      AlexaApi.get().resetAVSCredentials();
+      if (GLOBALS.AlexaAvsstatus) {
+        AlexaApi.get().resetAVSCredentials();
+      }
       AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
       let getsuportedmode = await appApi$9.getSupportedAudioPorts();
       for (let i = 0; i < getsuportedmode.supportedAudioPorts.length; i++) {
@@ -40386,7 +40404,7 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           });
         }
         _handleEnter() {
-          if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied") {
+          if (AlexaApi.get().checkAlexaAuthStatus() !== "AlexaUserDenied" && GLOBALS.AlexaAvsstatus) {
             Network.get().isConnectedToInternet().then(result => {
               if (result) Registry.setTimeout(() => {
                 Router.navigate('AlexaLoginScreen');
@@ -53402,7 +53420,9 @@ preferredAudioLanguages:   preferredAudioLanguages$1
           callsign: "org.rdk.VoiceControl"
         }).then(res => {
           if (Storage$1.get("alexaOTPReset")) {
-            AlexaApi.get().resetAVSCredentials();
+            if (GLOBALS.AlexaAvsstatus) {
+              AlexaApi.get().resetAVSCredentials();
+            }
             Storage$1.remove("alexaOTPReset");
           }
           thunder$8.on("org.rdk.VoiceControl", 'onServerMessage', notification => {
@@ -53977,18 +53997,22 @@ preferredAudioLanguages:   preferredAudioLanguages$1
         }
         _handleEnter() {
           if (GLOBALS.topmostApp !== GLOBALS.selfClientName) {
-            AlexaApi.get().resetAVSCredentials().then(() => {
-              console.log("avs credentials reseted");
-            });
+            if (GLOBALS.AlexaAvsstatus) {
+              AlexaApi.get().resetAVSCredentials().then(() => {
+                console.log("avs credentials reseted");
+              });
+            }
             console.log("Current app: " + GLOBALS.topmostApp + ", moving the app to front");
             rdkShellApisInstance.moveToFront(GLOBALS.topmostApp);
             rdkShellApisInstance.setFocus(GLOBALS.topmostApp).catch(err => {
               Metrics$3.error(Metrics$3.ErrorType.OTHER, 'PluginError', "Thunder RDKshell set focus error" + JSON.stringify(err), false, null);
             });
           } else {
-            AlexaApi.get().resetAVSCredentials().then(async () => {
-              await Router.navigate('AlexaLoginScreen');
-            });
+            if (GLOBALS.AlexaAvsstatus) {
+              AlexaApi.get().resetAVSCredentials().then(async () => {
+                await Router.navigate('AlexaLoginScreen');
+              });
+            }
           }
         }
         _focus() {
@@ -66374,18 +66398,23 @@ preferredAudioLanguages:   preferredAudioLanguages$1
       console.log("App listenToVoiceControl method got called, configuring VoiceControl Plugin");
       await voiceApi.activate().then(() => {
         voiceApi.voiceStatus().then(voiceStatusResp => {
-          if (voiceStatusResp.ptt.status != "ready" || !voiceStatusResp.urlPtt.includes("avs://")) {
-            console.error("App voiceStatus says PTT/AVS not ready, enabling it.");
-            // TODO: Future -> add option for user to select which Voice service provider.
-            // Then configure VoiceControl plugin for that end point.
-            // TODO: voiceApi.configureVoice()
-            if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied") {
-              AlexaApi.get().setAlexaAuthStatus("");
-              voiceApi.configureVoice({
-                "enable": true
-              }).then(() => {
-                AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
-              });
+          if (voiceStatusResp.success) {
+            if (voiceStatusResp.ptt.status != "ready" || !voiceStatusResp.urlPtt.includes("avs://")) {
+              GLOBALS.AlexaAvsstatus(false);
+              console.error("App voiceStatus says PTT/AVS not ready, enabling it.");
+              // TODO: Future -> add option for user to select which Voice service provider.
+              // Then configure VoiceControl plugin for that end point.
+              // TODO: voiceApi.configureVoice()
+              if (AlexaApi.get().checkAlexaAuthStatus() != "AlexaUserDenied") {
+                AlexaApi.get().setAlexaAuthStatus("");
+                voiceApi.configureVoice({
+                  "enable": true
+                }).then(() => {
+                  AlexaApi.get().setAlexaAuthStatus("AlexaAuthPending");
+                });
+              }
+            } else {
+              GLOBALS.AlexaAvsstatus(true);
             }
           }
         });
